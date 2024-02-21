@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>758</width>
+    <height>459</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="mainLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(199, 199, 199);
+color: rgb(0, 0, 0);</string>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Транспортные средства</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="tab1layout">
+        <item>
+         <widget class="QTableView" name="tableVehicle"/>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="buttonsLayout">
+          <item>
+           <widget class="QPushButton" name="btnAddVehicle">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(128, 128, 128);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Добавить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnRemoveVehicle">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(128, 128, 128);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Производители</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="tab1layout">
+        <item>
+         <widget class="QTableView" name="tableManufacturers"/>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="buttonsLayout">
+          <item>
+           <widget class="QPushButton" name="btnAddManufacturer">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(128, 128, 128);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Добавить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnRemoveManufacturer">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(128, 128, 128);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>Дилерские центры</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="tab1layout">
+        <item>
+         <widget class="QTableView" name="tableDealerships"/>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="buttonsLayout">
+          <item>
+           <widget class="QPushButton" name="btnAddDealership">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(128, 128, 128);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Добавить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnRemoveDealership">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(128, 128, 128);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Покупатели</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="tab1layout">
+        <item>
+         <widget class="QTableView" name="tableCustomers">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="buttonsLayout">
+          <item>
+           <widget class="QPushButton" name="btnAddCustomer">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(128, 128, 128);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Добавить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnRemoveCustomer">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(128, 128, 128);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_5">
+       <attribute name="title">
+        <string>Продажи</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="tab1layout">
+        <item>
+         <widget class="QTableView" name="tableSales">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(199, 199, 199);
+color: rgb(0, 0, 0);</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="buttonsLayout">
+          <item>
+           <widget class="QPushButton" name="btnAddSale">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(128, 128, 128);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Добавить</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnRemoveSale">
+            <property name="styleSheet">
+             <string notr="true">
+background-color: rgb(128, 128, 128);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Удалить</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>758</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
