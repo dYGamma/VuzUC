@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Сохранение имени пользователя и отслеживание посещений</title>
+</head>
+<body>
+  <h1>Добро пожаловать на нашу страницу!</h1>
+  
+  <label for="username">Введите ваше имя:</label>
+  <input type="text" id="username" name="username">
+  <button onclick="saveUsername()">Сохранить</button>
+
+  <div id="usernameDisplay"></div>
+  <div id="visitCountDisplay"></div>
+
+  <script>
+    // Функция для сохранения имени пользователя в cookies
+    function saveUsername() {
+      const usernameInput = document.getElementById('username').value;
+      // Устанавливаем куки с максимальным сроком жизни на год
+      document.cookie = `username=${usernameInput}; max-age=31536000; path=/`;
+      document.getElementById('usernameDisplay').innerText = `Ваше имя: ${usernameInput}`;
+    }
+
+    // Функция для отслеживания количества посещений и отображения на странице
+    function trackVisits() {
+      if (localStorage.getItem('visitCount')) {
+        let visitCount = parseInt(localStorage.getItem('visitCount'));
+        visitCount++;
+        localStorage.setItem('visitCount', visitCount);
+        document.getElementById('visitCountDisplay').innerText = `Количество посещений: ${visitCount}`;
+      } else {
+        localStorage.setItem('visitCount', 1);
+        document.getElementById('visitCountDisplay').innerText = `Количество посещений: 1`;
+      }
+    }
+
+    // Вызов функции для отслеживания посещений при загрузке страницы
+    trackVisits();
+
+    // При загрузке страницы пытаемся получить значение имени пользователя из куки и отобразить его
+    window.onload = function() {
+      const cookies = document.cookie.split('; ');
+      for (const cookie of cookies) {
+        const [name, value] = cookie.split('=');
+        if (name === 'username') {
+          document.getElementById('usernameDisplay').innerText = `Ваше имя: ${value}`;
+          document.getElementById('username').value = value;
+          break;
+        }
+      }
+    };
+  </script>
+</body>
+</html>

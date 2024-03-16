@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Горизонтальная навигационная панель</title>
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #ff8787;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a, .dropdown-content a {
+            display: inline-block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover, .dropdown:hover .dropdown-content {
+            background-color: #3d3d3d;
+        }
+
+        .dropdown {
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            min-width: 160px;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            display: block;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        img {
+            display: block;
+            margin: auto;
+            margin-top: 20px;
+            max-width: 80%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<ul>
+    <li class="dropdown">
+        <a href="#" class="dropbtn">Пункт 1</a>
+        <div class="dropdown-content">
+            <a href="#" onclick="showImage('photo7.jpg')">Ссылка 1</a>
+            <a href="#" onclick="showImage('photo8.jpg')">Ссылка 2</a>
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropbtn">Пункт 2</a>
+        <div class="dropdown-content">
+            <a href="#" onclick="showImage('photo1.gif')">Ссылка 1</a>
+            <a href="#" onclick="showImage('photo2.jpg')">Ссылка 2</a>
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropbtn">Пункт 3</a>
+        <div class="dropdown-content">
+            <a href="#" onclick="showImage('photo3.jpg')">Ссылка 1</a>
+            <a href="#" onclick="showImage('photo4.jpg')">Ссылка 2</a>
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropbtn">Пункт 4</a>
+        <div class="dropdown-content">
+            <a href="#" onclick="showImage('photo5.gif')">Ссылка 1</a>
+            <a href="#" onclick="showImage('photo6.gif')">Ссылка 2</a>
+        </div>
+    </li>
+</ul>
+
+<div id="imageContainer"></div>
+
+<script>
+    function showImage(imageUrl) {
+        var imageContainer = document.getElementById("imageContainer");
+        imageContainer.innerHTML = "<img src='" + imageUrl + "'>";
+    }
+</script>
+
+</body>
+</html>
