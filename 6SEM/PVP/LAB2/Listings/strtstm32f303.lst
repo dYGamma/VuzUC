@@ -1,0 +1,227 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000 00000680 
+                       Stack_Size
+                               EQU              0x00000680
+    2 00000000                 AREA             STACK, NOINIT, READWRITE, ALIGN
+=3
+    3 00000000         Stack_Mem
+                               SPACE            Stack_Size
+    4 00000680         __initial_sp
+    5 00000680 00000680 
+                       Heap_Size
+                               EQU              0x00000680
+    6 00000680                 AREA             HEAP, NOINIT, READWRITE, ALIGN=
+3
+    7 00000000         __heap_base
+    8 00000000         Heap_Mem
+                               SPACE            Heap_Size
+    9 00000680         __heap_limit
+   10 00000680                 PRESERVE8
+   11 00000680                 THUMB
+   12 00000680                 AREA             RESET, DATA, READONLY
+   13 00000000                 EXPORT           __Vectors
+   14 00000000 00000000 
+                       __Vectors
+                               DCD              __initial_sp
+   15 00000004 00000000        DCD              Reset_Handler
+   16 00000008         __Vectors_End
+   17 00000008 00000008 
+                       __Vectors_Size
+                               EQU              __Vectors_End - __Vectors
+   18 00000008                 AREA             |.text|, CODE, READONLY
+   19 00000000         Reset_Handler
+                               PROC
+   20 00000000                 IMPORT           main
+   21 00000000 4800            LDR              R0, =main
+   22 00000002 4700            BX               R0
+   23 00000004                 ENDP
+   24 00000004                 EXPORT           __initial_sp
+   25 00000004                 EXPORT           __heap_base
+   26 00000004                 EXPORT           __heap_limit
+   27 00000004                 END
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\strtstm32f303.d -o.\objects\strtstm32f303.o -I.\RT
+E\_Target_1 -I"C:\Program Files\Keil\MDK-ARM-v5-Packs\ARM\CMSIS\5.6.0\CMSIS\Cor
+e\Include" -I"C:\Program Files\Keil\MDK-ARM-v5-Packs\Keil\STM32F3xx_DFP\2.1.0\D
+rivers\CMSIS\Device\ST\STM32F3xx\Include" --predefine="__EVAL SETA 1" --predefi
+ne="__UVISION_VERSION SETA 529" --predefine="_RTE_ SETA 1" --predefine="STM32F3
+03xC SETA 1" --list=.\listings\strtstm32f303.lst strtstm32F303.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+STACK 00000000
+
+Symbol: STACK
+   Definitions
+      At line 2 in file strtstm32F303.s
+   Uses
+      None
+Comment: STACK unused
+Stack_Mem 00000000
+
+Symbol: Stack_Mem
+   Definitions
+      At line 3 in file strtstm32F303.s
+   Uses
+      None
+Comment: Stack_Mem unused
+__initial_sp 00000680
+
+Symbol: __initial_sp
+   Definitions
+      At line 4 in file strtstm32F303.s
+   Uses
+      At line 14 in file strtstm32F303.s
+      At line 24 in file strtstm32F303.s
+
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+HEAP 00000000
+
+Symbol: HEAP
+   Definitions
+      At line 6 in file strtstm32F303.s
+   Uses
+      None
+Comment: HEAP unused
+Heap_Mem 00000000
+
+Symbol: Heap_Mem
+   Definitions
+      At line 8 in file strtstm32F303.s
+   Uses
+      None
+Comment: Heap_Mem unused
+__heap_base 00000000
+
+Symbol: __heap_base
+   Definitions
+      At line 7 in file strtstm32F303.s
+   Uses
+      At line 25 in file strtstm32F303.s
+Comment: __heap_base used once
+__heap_limit 00000680
+
+Symbol: __heap_limit
+   Definitions
+      At line 9 in file strtstm32F303.s
+   Uses
+      At line 26 in file strtstm32F303.s
+Comment: __heap_limit used once
+4 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+RESET 00000000
+
+Symbol: RESET
+   Definitions
+      At line 12 in file strtstm32F303.s
+   Uses
+      None
+Comment: RESET unused
+__Vectors 00000000
+
+Symbol: __Vectors
+   Definitions
+      At line 14 in file strtstm32F303.s
+   Uses
+      At line 13 in file strtstm32F303.s
+      At line 17 in file strtstm32F303.s
+
+__Vectors_End 00000008
+
+Symbol: __Vectors_End
+   Definitions
+      At line 16 in file strtstm32F303.s
+   Uses
+      At line 17 in file strtstm32F303.s
+Comment: __Vectors_End used once
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 18 in file strtstm32F303.s
+   Uses
+      None
+Comment: .text unused
+Reset_Handler 00000000
+
+Symbol: Reset_Handler
+   Definitions
+      At line 19 in file strtstm32F303.s
+   Uses
+      At line 15 in file strtstm32F303.s
+Comment: Reset_Handler used once
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+Heap_Size 00000680
+
+Symbol: Heap_Size
+   Definitions
+      At line 5 in file strtstm32F303.s
+   Uses
+      At line 8 in file strtstm32F303.s
+Comment: Heap_Size used once
+Stack_Size 00000680
+
+Symbol: Stack_Size
+   Definitions
+      At line 1 in file strtstm32F303.s
+   Uses
+      At line 3 in file strtstm32F303.s
+Comment: Stack_Size used once
+__Vectors_Size 00000008
+
+Symbol: __Vectors_Size
+   Definitions
+      At line 17 in file strtstm32F303.s
+   Uses
+      None
+Comment: __Vectors_Size unused
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+main 00000000
+
+Symbol: main
+   Definitions
+      At line 20 in file strtstm32F303.s
+   Uses
+      At line 21 in file strtstm32F303.s
+Comment: main used once
+1 symbol
+353 symbols in table
