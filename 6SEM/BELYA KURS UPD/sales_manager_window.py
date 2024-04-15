@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QPushButton
 import sqlite3
 
 class SalesManagementWindow(QWidget):
-    def __init__(self, login_window, previous_window, username):
+    def __init__(self, previous_window,login_window, username):
         super().__init__()
 
         self.setWindowTitle("Управление продажами")

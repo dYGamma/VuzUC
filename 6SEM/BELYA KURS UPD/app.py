@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButto
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
+
 import qdarkstyle
 import re
 
@@ -19,7 +20,7 @@ class LoginWindow(QWidget):
 
         self.setWindowTitle("Окно входа")
         self.setGeometry(0, 0, 600, 400)  # Increase initial size
-
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
         # Initialize the database connection
         self.init_db()
 
@@ -57,6 +58,8 @@ class LoginWindow(QWidget):
         self.warning_label = QLabel()
         self.login_button = QPushButton("Вход")
         self.register_button = QPushButton("Регистрация")
+
+        
 
         # Increase font size for labels and buttons
         font = QFont()
@@ -101,6 +104,7 @@ class LoginWindow(QWidget):
 
         self.login_button.clicked.connect(self.authenticate)
         self.register_button.clicked.connect(self.show_register_window)
+        
 
     def authenticate(self):
         username = self.input_username.text()
@@ -116,7 +120,7 @@ class LoginWindow(QWidget):
             self.info_page.show()
             self.hide()
         else:
-            self.warning_label.setText("Неправильный логин пользователя или пароль. Пожалуйста, попробуйте еще раз.")
+            self.warning_label.setText("Неправильный логин пользователя или пароль.")
             self.warning_label.setStyleSheet("color: red;")
 
     def center_on_screen(self):
@@ -133,7 +137,7 @@ class RegisterWindow(QDialog):
 
         self.setWindowTitle("Окно регистрации")
         self.setGeometry(0, 0, 600, 400)  # Set initial size, will be adjusted later
-
+        self.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
         # Create input widgets
         self.username_input = QLineEdit(self)
         self.full_name = QLineEdit(self)
@@ -214,7 +218,7 @@ class RegisterWindow(QDialog):
 
     def check_password_strength(self, password):
         # Check if password contains at least one uppercase letter and one digit
-        return re.search(r'[A-Z]', password) and re.search(r'\d', password)
+        return len(password) >= 8 and re.search(r'[A-Z]', password) and re.search(r'\d', password)
 
     def register_user(self):
         full_name = self.full_name.text()
@@ -222,31 +226,34 @@ class RegisterWindow(QDialog):
         password = self.password_input.text()
         pin = self.pin_input.text()
 
-             # Проверка на пустые поля
-        if not full_name or not username or not password or not pin:
-            QMessageBox.warning(self, "Пустые поля", "Пожалуйста, заполните все поля.", QMessageBox.Ok)
-            return
+        # Проверяем, существует ли уже такой логин
+        query = "SELECT * FROM users WHERE username = ?"
+        self.cursor.execute(query, (username,))
+        existing_user = self.cursor.fetchone()
 
-        # Проверка на длину пароля
-        if len(password) < 6:
-            self.warning_label.setText("Пароль должен содержать минимум 6 символов.")
-            return
+        
 
-        # Проверка на правильность ПИН-кода
         if pin != '1234':
             QMessageBox.warning(self, "Неверный ПИН-код", "Пожалуйста, введите правильный ПИН-код.", QMessageBox.Ok)
             return
-
-        # Проверка на сильность пароля
-        if not self.check_password_strength(password):
-            self.warning_label.setText("Пароль должен содержать хотя бы одну заглавную букву и одну цифру.")
-            return
-            # Проверка уникальности имени пользователя
-        query = "SELECT * FROM users WHERE username=?"
-        self.cursor.execute(query, (username,))
-        existing_user = self.cursor.fetchone()
+        
         if existing_user:
-            QMessageBox.warning(self, "Пользователь уже существует", "Пользователь с таким именем уже существует. Пожалуйста, выберите другое имя пользователя.")
+            self.warning_label.setText("Такой логин уже существует. Пожалуйста, выберите другой.")
+            return
+        
+        # Check if full name length is between 1 and 70 characters
+        if not (1 <= len(full_name) <= 70):
+            self.warning_label.setText("Ошибка, проверьть ФИО пользователя")
+            return
+        
+        # Проверяем, содержит ли логин только английские буквы и спецсимволы
+        if not re.match(r'^[a-zA-Z0-9_]+$', username):
+            self.warning_label.setText("Логин может содержать только английские буквы и спецсимволы.")
+            return
+
+        # Check if password meets strength requirements
+        if not self.check_password_strength(password):
+            self.warning_label.setText("Слишком слабый пароль (минимум 8 символов и 1 заглаваная буква, язык - анг-й).")
             return
 
         permissions = 'Average'
@@ -440,7 +447,7 @@ class InfoPage(QWidget):
             self.info_page.show()
             self.hide()
         else:
-            QMessageBox.warning(self, "Access Denied", "You don't have sufficient permissions.", QMessageBox.Ok)
+            QMessageBox.warning(self, "Отказано в доступе", "У вас недостаточно прав, обратитесь к администратору.", QMessageBox.Ok)
 
     def logout(self):
         self.login_page = LoginWindow()
