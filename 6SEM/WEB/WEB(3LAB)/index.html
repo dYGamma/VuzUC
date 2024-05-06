@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Редактор JavaScript</title>
+        <link rel="stylesheet" href="jseditstyle.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <meta charset="UTF-8">
+        <meta name="description" content="Сайт о процессорах">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+<body>
+    <div id="content">
+        Введите количество строк матрицы:<br>
+        <input type="number" id="rows"><br>
+        Введите количество столбцов матрицы:<br>
+        <input type="number" id="columns"><br>
+        <br>
+        <button onclick="generateMatrix()">Сгенерировать матрицу</button><br><br>
+        Результат:<br>
+        <textarea id="myrezult" rows=3 cols=40></textarea><br>
+        <div class="controls">
+            <button id="play" onclick="findFirstNegativeColumn()">Поиск первого отрицательного столбца</button>
+            <span></span>
+            <button id="clear" onclick="clearResult()">Очистить результат</button>
+        </div>
+    </div>
+
+    <script>
+        function generateMatrix() {
+            const rows = parseInt(document.getElementById('rows').value);
+            const columns = parseInt(document.getElementById('columns').value);
+            const matrix = [];
+            for (let i = 0; i < rows; i++) {
+                const row = [];
+                for (let j = 0; j < columns; j++) {
+                    row.push(Math.floor(Math.random() * 21) - 10); // генерация случайного числа от -10 до 10
+                }
+                matrix.push(row);
+            }
+            document.getElementById('myrezult').value = JSON.stringify(matrix);
+        }
+
+        function findFirstNegativeColumn() {
+            const matrix = JSON.parse(document.getElementById('myrezult').value);
+            let found = false;
+            for (let j = 0; j < matrix[0].length; j++) {
+                for (let i = 0; i < matrix.length; i++) {
+                    if (matrix[i][j] < 0) {
+                        found = true;
+                        document.getElementById('myrezult').value = `Первый отрицательный столбец: ${j + 1}`;
+                        return;
+                    }
+                }
+            }
+            if (!found) {
+                document.getElementById('myrezult').value = "Отрицательных элементов нет";
+            }
+        }
+
+        function clearResult() {
+            document.getElementById('myrezult').value = '';
+        }
+    </script>
+</body>
+</html>
