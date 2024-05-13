@@ -361,7 +361,7 @@ class SalesManagementWindow(QWidget):
         # Confirm deletion with user
         confirm_dialog = QMessageBox()
         confirm_dialog.setIcon(QMessageBox.Warning)
-        confirm_dialog.setText("Are you sure you want to delete this record?")
+        confirm_dialog.setText("Вы действительно хотите удалить информацию о товаре?")
         confirm_dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         result = confirm_dialog.exec_()
 

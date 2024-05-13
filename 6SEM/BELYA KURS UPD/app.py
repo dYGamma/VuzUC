@@ -416,7 +416,7 @@ class InfoPage(QWidget):
     def go_to_main_menu(self):
         permissions = self.get_permissions()
 
-        if permissions == "Full" or permissions == "Limited":
+        if permissions == "Full" or permissions == "Limited" or permissions == "Average" or permissions == "Полный доступ" or permissions == "Средний доступ":
             self.info_page = SalesManagementWindow(self, self.login_window, self.username)
             self.info_page.show()
             self.hide()
@@ -442,7 +442,7 @@ class InfoPage(QWidget):
     def go_to_management(self):
         permissions = self.get_permissions()
 
-        if permissions == "Full":
+        if permissions == "Full" or permissions == "Полный доступ":
             self.info_page = UserManagementWindow(self, self.login_window, self.username)
             self.info_page.show()
             self.hide()
