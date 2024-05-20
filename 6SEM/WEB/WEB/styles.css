@@ -1,0 +1,37 @@
+/* Связные таблицы стилей, работа с нижней частью страницы */
+.manufacturer-images {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+.manufacturer-images img {
+    max-width: 100px;
+    height: auto;
+}
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    text-align: center;
+}
+mark {
+    background-color: #9c9c9c;
+    color: #fff;
+}
+/*.video-container {
+    position: absolute;
+    width: 200px; 
+    height: 150px; 
+}
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 110;
+    width: 200%;
+    height: 200%;
+} */
+.center-picture {
+    margin-left: 100px;
+    margin-top: 20px; 
+}
