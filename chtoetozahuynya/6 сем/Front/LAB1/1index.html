@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slideshow</title>
+</head>
+<body>
+    <a href="#" id="slideshowImage" target="_blank">
+        <img src="" alt="Slideshow Image">
+    </a>
+
+    <script>
+        var images = [
+            "photo1.gif",
+            "photo2.jpg",
+            "photo3.jpg"
+        ];
+        var currentIndex = 0;
+        var slideshowImage = document.getElementById("slideshowImage");
+
+        function nextSlide() {
+            currentIndex++;
+            if (currentIndex >= images.length) {
+                currentIndex = 0;
+            }
+            slideshowImage.href = images[currentIndex];
+            slideshowImage.children[0].src = images[currentIndex];
+        }
+
+        // Запуск слайд-шоу с интервалом 1 секунда
+        setInterval(nextSlide, 1000);
+    </script>
+</body>
+</html>
