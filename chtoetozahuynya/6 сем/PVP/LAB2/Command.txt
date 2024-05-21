@@ -1,4 +1,0 @@
-log > knyaz.log
-d 0x20000630, 0x2000067F
-d 0x2000062F, 0x20000618
-log off
