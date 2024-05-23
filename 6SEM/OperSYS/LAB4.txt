@@ -1,0 +1,9 @@
+g++ lab3.cpp main.cpp -lpthread -o lab3
+./lab3
+--компиляция перед тестами
+set GTEST_DIR=%cd%
+g++ -isystem "%GTEST_DIR%\include" -I"%GTEST_DIR%" -pthread -c "%GTEST_DIR%\src\gtest-all.cc"
+ar -rv libgtest.a gtest-all.o
+
+--Запуск тестов
+.\runTests.exe
