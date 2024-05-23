@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">LAB3(calc)</string>
+    <string name="calc_txt">Вычислятор</string>
+
+</resources>

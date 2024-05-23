@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <shape xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="rectangle">
+        <solid android:color="#1A237E"/> <!-- Цвет фона кнопки -->
+        <corners android:radius="8dp"/> <!-- Закругление углов -->
+    </shape>
+</selector>

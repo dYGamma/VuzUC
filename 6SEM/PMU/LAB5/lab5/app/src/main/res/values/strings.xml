@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">lab5</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_activity_main3">MainActivity3</string>
+    <string name="title_activity_main4">MainActivity4</string>
+    <string name="button1">Фонарик</string>
+    <string name="button2">Камера</string>
+    <string name="button3">Карты</string>
+    <string name="button4">Выход</string>
+    <string name="button5">Назад</string>
+    <string name="button6">Кнопка фонарика</string>
+    <string name="button6_on">Кнопка фонарика</string>
+    <string name="button6_off">Кнопка фонарика</string>
+
+
+    <string name="take_picture">Picture</string>
+    <string name="start_record">Start</string>
+    <string name="stop_record">Stop</string>
+</resources>
