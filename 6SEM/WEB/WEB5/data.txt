@@ -10,3 +10,4 @@ Name: Дмитрий, Surname: Самарин, Patronymic: Васильевич,
 Name: Дмитрий, Surname: Самарин, Patronymic: Васильевич, Email: samarindima4@gmail.com, Cooling Type: air, Feedback: цццц, Options: Ноутбук, Компьютер, Selected Option: option3, Image URL: /uploads/svopic2.png
 Name: Дмитрий, Surname: Самарин, Patronymic: Васильевич, Email: samarindima4@gmail.com, Cooling Type: air, Feedback: цуацу, Options: Ноутбук, Компьютер, Selected Option: option4, Image URL: /uploads/1.png
 Name: Дмитрий, Surname: Самарин, Patronymic: Васильевич, Email: samarindima4@gmail.com, Cooling Type: air, Feedback: спасибо за помощь, Options: Ноутбук, Компьютер, Gender: male, Image URL: /uploads/phan.png
+Name: Дмитрий, Surname: Самарин, Patronymic: Васильевич, Email: ex@m, Cooling Type: air, Feedback: спасибо, Options: Ноутбук, Компьютер, Gender: male, Image URL: /uploads/pc.png
