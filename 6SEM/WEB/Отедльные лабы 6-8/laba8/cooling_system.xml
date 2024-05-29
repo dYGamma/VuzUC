@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Database>
+    <CoolingTypes>
+        <CoolingType>
+            <TypeName>Water Cooling</TypeName>
+            <Description>Cooling system using water as the cooling medium</Description>
+        </CoolingType>
+        <CoolingType>
+            <TypeName>Air Cooling</TypeName>
+            <Description>Cooling system using air as the cooling medium</Description>
+        </CoolingType>
+        <CoolingType>
+            <TypeName>test</TypeName>
+            <Description>Test cooling type</Description>
+        </CoolingType>
+    </CoolingTypes>
+    <Models>
+        <Model>
+            <ModelName>Hydro Series H100i</ModelName>
+            <Description>High-performance water cooling system</Description>
+            <CoolingType>Water Cooling</CoolingType>
+        </Model>
+        <Model>
+            <ModelName>Kraken X63</ModelName>
+            <Description>Advanced water cooling system with RGB</Description>
+            <CoolingType>Water Cooling</CoolingType>
+        </Model>
+        <Model>
+            <ModelName>Noctua NH-D15</ModelName>
+            <Description>Premium air cooling system with dual fans</Description>
+            <CoolingType>Air Cooling</CoolingType>
+        </Model>
+    </Models>
+</Database>

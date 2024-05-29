@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Database>
+    <CoolingTypes>
+        <CoolingType>
+            <TypeName>Водяное охлаждение</TypeName>
+            <Description>Система охлаждения с использованием воды в качестве охлаждающей среды</Description>
+            <Manufacturer>Corsair</Manufacturer>
+            <ImageURL>https://example.com/images/water_cooling.jpg</ImageURL>
+        </CoolingType>
+        <CoolingType>
+            <TypeName>Воздушное охлаждение</TypeName>
+            <Description>Система охлаждения с использованием воздуха в качестве охлаждающей среды</Description>
+            <Manufacturer>Noctua</Manufacturer>
+            <ImageURL>https://example.com/images/air_cooling.jpg</ImageURL>
+        </CoolingType>
+        <CoolingType>
+            <TypeName>Тест</TypeName>
+            <Description>Тестовый тип охлаждения</Description>
+            <Manufacturer>Тестовый производитель</Manufacturer>
+            <ImageURL>https://example.com/images/test_cooling.jpg</ImageURL>
+        </CoolingType>
+        <CoolingType>
+            <TypeName>Жидкостное охлаждение</TypeName>
+            <Description>Высокоэффективная система жидкостного охлаждения</Description>
+            <Manufacturer>NZXT</Manufacturer>
+            <ImageURL>https://example.com/images/liquid_cooling.jpg</ImageURL>
+        </CoolingType>
+        <CoolingType>
+            <TypeName>Гибридное охлаждение</TypeName>
+            <Description>Комбинация воздушного и жидкостного охлаждения</Description>
+            <Manufacturer>Cooler Master</Manufacturer>
+            <ImageURL>https://example.com/images/hybrid_cooling.jpg</ImageURL>
+        </CoolingType>
+        <CoolingType>
+            <TypeName>Охлаждение фазовым переходом</TypeName>
+            <Description>Продвинутая система охлаждения с использованием фазового перехода</Description>
+            <Manufacturer>Custom</Manufacturer>
+            <ImageURL>https://example.com/images/phase_change_cooling.jpg</ImageURL>
+        </CoolingType>
+        <CoolingType>
+            <TypeName>ТЭК-охлаждение</TypeName>
+            <Description>Термоэлектрическая система охлаждения</Description>
+            <Manufacturer>Cryorig</Manufacturer>
+            <ImageURL>https://example.com/images/tec_cooling.jpg</ImageURL>
+        </CoolingType>
+        <CoolingType>
+            <TypeName>Безвентиляторное охлаждение</TypeName>
+            <Description>Бесшумное охлаждение без вентиляторов</Description>
+            <Manufacturer>Arctic</Manufacturer>
+            <ImageURL>https://example.com/images/fanless_cooling.jpg</ImageURL>
+        </CoolingType>
+        <CoolingType>
+            <TypeName>Пассивное охлаждение</TypeName>
+            <Description>Охлаждение с использованием пассивных радиаторов</Description>
+            <Manufacturer>Be Quiet!</Manufacturer>
+            <ImageURL>https://example.com/images/passive_cooling.jpg</ImageURL>
+        </CoolingType>
+        <CoolingType>
+            <TypeName>Масляное охлаждение</TypeName>
+            <Description>Охлаждение с погружением в масло</Description>
+            <Manufacturer>Custom</Manufacturer>
+            <ImageURL>https://example.com/images/oil_cooling.jpg</ImageURL>
+        </CoolingType>
+    </CoolingTypes>
+    <Models>
+        <Model>
+            <ModelName>Hydro Series H100i</ModelName>
+            <Description>Высокопроизводительная система водяного охлаждения</Description>
+            <CoolingType>Водяное охлаждение</CoolingType>
+            <ReleaseDate>2022-01-15</ReleaseDate>
+        </Model>
+        <Model>
+            <ModelName>Kraken X63</ModelName>
+            <Description>Продвинутая система водяного охлаждения с RGB</Description>
+            <CoolingType>Водяное охлаждение</CoolingType>
+            <ReleaseDate>2021-11-20</ReleaseDate>
+        </Model>
+        <Model>
+            <ModelName>Noctua NH-D15</ModelName>
+            <Description>Премиальная система воздушного охлаждения с двумя вентиляторами</Description>
+            <CoolingType>Воздушное охлаждение</CoolingType>
+            <ReleaseDate>2020-05-10</ReleaseDate>
+        </Model>
+        <Model>
+            <ModelName>MasterLiquid ML360R</ModelName>
+            <Description>Высокоэффективное жидкостное охлаждение с RGB</Description>
+            <CoolingType>Жидкостное охлаждение</CoolingType>
+            <ReleaseDate>2023-03-22</ReleaseDate>
+        </Model>
+        <Model>
+            <ModelName>Ryzen Wraith Prism</ModelName>
+            <Description>Продвинутое воздушное охлаждение для процессоров Ryzen</Description>
+            <CoolingType>Воздушное охлаждение</CoolingType>
+            <ReleaseDate>2019-07-14</ReleaseDate>
+        </Model>
+        <Model>
+            <ModelName>Gemini M6</ModelName>
+            <Description>Гибридное охлаждение с уникальным дизайном</Description>
+            <CoolingType>Гибридное охлаждение</CoolingType>
+            <ReleaseDate>2022-09-30</ReleaseDate>
+        </Model>
+        <Model>
+            <ModelName>EK-AIO 240</ModelName>
+            <Description>Все-в-одном жидкостное охлаждение</Description>
+            <CoolingType>Водяное охлаждение</CoolingType>
+            <ReleaseDate>2021-02-18</ReleaseDate>
+        </Model>
+        <Model>
+            <ModelName>Shadow Rock 3</ModelName>
+            <Description>Высокопроизводительное воздушное охлаждение с низким уровнем шума</Description>
+            <CoolingType>Воздушное охлаждение</CoolingType>
+            <ReleaseDate>2020-08-25</ReleaseDate>
+        </Model>
+        <Model>
+            <ModelName>Thermaltake Floe RC</ModelName>
+            <Description>Жидкостное охлаждение с охлаждением памяти</Description>
+            <CoolingType>Жидкостное охлаждение</CoolingType>
+            <ReleaseDate>2023-01-05</ReleaseDate>
+        </Model>
+        <Model>
+            <ModelName>Dark Rock Pro 4</ModelName>
+            <Description>Бесшумное воздушное охлаждение с двойной башенной конструкцией</Description>
+            <CoolingType>Воздушное охлаждение</CoolingType>
+            <ReleaseDate>2018-04-12</ReleaseDate>
+        </Model>
+    </Models>
+</Database>

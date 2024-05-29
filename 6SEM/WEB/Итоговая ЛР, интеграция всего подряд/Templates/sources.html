@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Использованные источники</title>
+    <style>
+        /* Общие стили */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-image: linear-gradient(to right, #6d6d6d, #333);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1, h2 {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #83ecff;
+        }
+
+        footer {
+            background-image: linear-gradient(to right, #6d6d6d, #333);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Использованные источники</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index_page') }}">Главная страница (HTML 4)</a></li>
+                <li><a href="{{ url_for('home') }}">Главная страница (HTML 5 - обновленный вариант)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Сайты, использованные при подготовке</h2>
+            <ul>
+                <li><a href="https://www.coolermaster.com/">Cooler Master</a></li>
+                <li><a href="https://noctua.at/en">Noctua</a></li>
+                <li><a href="https://www.corsair.com/">Corsair</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Системы охлаждения компьютера. Все права защищены.</p>
+    </footer>
+</body>
+</html>

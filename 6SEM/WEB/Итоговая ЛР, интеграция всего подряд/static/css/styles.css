@@ -1,0 +1,75 @@
+/* Связные таблицы стилей, работа с нижней частью страницы */
+.manufacturer-images {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    
+}
+.manufacturer-images img {
+    max-width: 100px;
+    height: auto;
+    
+}
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    text-align: center;
+}
+mark {
+    background-color: #9c9c9c;
+    color: #fff;
+}
+/*.video-container {
+    position: absolute;
+    width: 200px; 
+    height: 150px; 
+}
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 110;
+    width: 200%;
+    height: 200%;
+} */
+.center-picture {
+    margin-left: 100px;
+    margin-top: 20px; 
+}
+
+header h1 {
+    color: red;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+img {
+    max-width: 100%;
+    display: block;
+    margin: 0 auto 20px; /* Отступ снизу */
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+

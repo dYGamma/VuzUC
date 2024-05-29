@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Спасибо за ваш отзыв!</h2>
+        <p><strong>Имя:</strong> {{ name }}</p>
+        <p><strong>Фамилия:</strong> {{ surname }}</p>
+        <p><strong>Отчество:</strong> {{ patronymic }}</p>
+        <p><strong>Электронная почта:</strong> {{ email }}</p>
+        <p><strong>Тип системы охлаждения:</strong> {{ cooling_type }}</p>
+        <p><strong>Ваш отзыв:</strong> {{ feedback }}</p>
+        <p><strong>Устройства:</strong> 
+            {% for option in options %}
+                {{ option }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+        <p><strong>Пол:</strong> {{ gender }}</p>
+        {% if image_url %}
+            <p><strong>Загруженное изображение:</strong></p>
+            <img src="{{ image_url }}" alt="Uploaded Image" style="max-width: 400px;">
+        {% else %}
+            <p>Изображение не загружено или имеет неверный формат.</p>
+        {% endif %}
+        <a href="{{ url_for('home') }}" class="btn">Вернуться на главную</a>
+    </div>
+</body>
+</html>

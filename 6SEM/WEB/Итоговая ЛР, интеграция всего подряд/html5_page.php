@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Информация о системах охлаждения компьютера и их компонентах.">
+    <meta name="language" content="Russian">
+    <meta name="distribution" content="global">
+    <meta name="author" content="Дмитрий">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <script type="text/javascript" src="scripts/banner.js"></script> -->
+    <script type="text/javascript" src="scripts/scenarios.js"></script>
+    
+    <title>Системы охлаждения компьютера - HTML5</title>
+    <!-- Тут подключаем наш файлик стилей -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Тег style, тут глобальные таблицы стилей -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+        header {
+            /* background-color: #333; */
+            color: #fff;
+            padding: 20px;
+            position: relative;
+            text-align: center;
+            /* Фон с градиентом */
+            background-image: linear-gradient(to right, #6d6d6d, #333);
+            
+        }
+        header h1, header h2 {
+            margin: 0;
+        }
+        nav {
+            background-image: linear-gradient(to right, #6d6d6d, #333);
+            padding: 10px 0;
+            text-align: center;
+            
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 10px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        main {
+            padding: 20px;
+        }
+
+        /* Разница между маргин бордер и паддинг */
+        article {
+            margin-bottom: 20px; /* Определяет внешний отступ элемента. */
+            border: 1px solid black; /* Определяет границу элемента. */
+            padding: 10px; /* Определяет внутренний отступ элемента. */
+        }
+
+        /* Применим псевдоэлемент для нашего артикля */
+        article p::first-letter {
+            
+            color: rgb(255, 82, 82);
+        }
+
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        .cooling-systems-info ul {
+            padding-left: 20px;
+        }
+
+        table tbody th,
+        table tbody td {
+            padding: 8px;
+            text-align: left;
+            
+        }
+
+        /* Псевдоклассы */
+        table tbody tr:nth-child(odd) {
+            background-color: #ffffff; /* Цвет фона для нечетных строк */
+            
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f2f2f2; /* Цвет фона для четных строк */
+            /* Использование свойства text-decoration */
+            text-decoration: underline;  
+        }
+
+        table tbody th:last-child,
+        table tbody td:last-child {
+            text-align: left; /* Выравнивание последнего столбца по центру */
+        }
+
+                /* Подсветка ячеек таблицы при наведении курсора */
+        table tbody td:hover {
+            background-color: #83ecff; /* Цвет фона при наведении курсора */
+        }
+                /* Стили для сложной нумерации списка */
+        .cooling-systems-info ul {
+            counter-reset: list-counter;
+            padding-left: 20px;
+        }
+        .cooling-systems-info ul li {
+            list-style: none;
+        }
+        .cooling-systems-info ul li::before {
+            content: counter(list-counter) ". ";
+            counter-increment: list-counter;
+        }
+        .cooling-systems-info ul ul {
+            counter-reset: sublist-counter;
+        }
+        .cooling-systems-info ul ul li {
+            list-style: none;
+        }
+        .cooling-systems-info ul ul li::before {
+            content: counter(list-counter) "." counter(sublist-counter) ": ";
+            counter-increment: sublist-counter;
+        }
+
+        /* Глобальный */
+        h1 {
+            color: blue;
+        }
+
+        /* Объединим селекторы */
+        header + nav {
+            margin-top: 1px;
+        }
+        /* Скругление углов прямоугольного элемента */
+        .video-container video {
+            border-radius: 10px; /* задаем радиус скругления углов */
+        }
+        /* Применим свойство фильтра для изображения */
+        .center-picture img {
+            filter: brightness(100%);
+            /* Трансформация изображения, сдвиг по осям */
+            transform: translate(1px, 1px);
+        }
+
+
+        a[href="sources.html"] {
+            color: rgb(255, 110, 110);
+        }
+
+        #main-content {
+            display: flex;
+        }
+        article {
+            flex: 1;
+        }
+        aside {
+            flex: 0 0 30%; /* Желаемая ширина столбца */
+        }
+
+
+        @media screen and (max-width: 768px) {
+            header, nav ul li {
+                padding: 3vw;
+            }
+            main, article {
+                padding: 3vw;
+            }
+        }
+        @media screen and (max-width: 480px) {
+            header, nav ul li {
+                padding: 2vw;
+            }
+            main, article {
+                padding: 2vw;
+            }
+            header h1 {
+                font-size: 5vw;
+            }
+            nav ul li {
+                margin: 0 1vw;
+            }
+            article p {
+                font-size: 4vw;
+            }
+            table {
+                font-size: 4vw;
+            }
+        }
+
+
+
+        /* Добавляем анимацию при наведении */
+        a:hover {
+            color: #83ecff; /* Цвет ссылки при наведении */
+            transition: color 0.3s ease; /* Плавное изменение цвета */
+        }
+
+
+        
+        #gallery {
+            display: flex;
+            align-items: center;
+        }
+        #gallery img {
+            width: 200px; /* Установите нужную ширину */
+            height: 100px; /* Установите нужную высоту */
+            object-fit: contain; /* Подгоняет изображение по размеру, сохраняя пропорции */
+            margin: auto;
+        }
+
+        #myModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: none;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            display: grid;
+            background-color: #fefefe;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30%;
+            height: auto;
+            padding: 30px;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .modal-content input, .modal-content button{
+            margin: 3px;
+        }
+
+        .form-container {
+            margin: 0 auto;
+            width: 80%;
+            max-width: 1300px;
+            border: 1px solid black;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <input id="input-char" type="text" placeholder="Введите данные для первой ячейки">
+            <input id="input-desc" type="text" placeholder="Введите данные для второй ячейки">
+            <button id="submit">Добавить</button>
+        </div>
+    </div>
+    <header id="header">
+        <!-- Наглядный пример локальной таблицы стиля (локально для одного тега (атрибут style)) -->
+        <img id="logo" src="vent2.png" alt="Логотип" width="50" style="position: absolute; right: 10px;">
+        <!-- Цвет применится белый, т.к он имеет более высокий приоритет, чем глобальные или связанные стили -->
+        <h1 style="color: white;">Системы охлаждения компьютера</h1>
+        <h2><samp>Главная страница</samp></h2>
+        <!-- Ещё один пример, как сверху -->
+        <div class="video-container">
+            <video src="nzxt.mp4" autoplay muted loop style="position: absolute; top: 60px; left: 50px; width: 30%;">
+            </video>
+        </div>
+        <img src="logo.png" alt="Логотип" width="300">
+    </header>
+    
+    <nav id="main-nav">
+        <ul>
+            <li><a href="index.html">Главная страница (HTML 4)</a></li>
+            <li><a href="sources.html">Использованные источники</a></li>
+        </ul>
+    </nav>
+
+    <main id="main-content">
+        <article>
+            <h2>Структура систем охлаждения компьютера</h2>
+            <table id="cooling-systems-table"> 
+                <caption>Таблица 1: Типы систем охлаждения</caption>
+                <colgroup>
+                    <col style="background-color: rgb(211, 211, 211);">
+                    <col style="background-color: rgb(211, 211, 211);">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Тип</th>
+                        <th>Описание</th>
+                    </tr>
+                </thead>
+                <tbody id="tbl-body">
+                    <tr>    
+                        <th rowspan="2">Воздушное охлаждение</th>
+                        <td>Использует вентиляторы для циркуляции воздуха внутри компьютера</td>
+                        <td rowspan="5" style="text-align: center;"><img src="pc.png" alt="" style="width: 26.4583333333mm; display: block; margin: 0 auto;"></td>
+                    </tr>
+                    <tr>
+                        <td>Данный тип охлаждения самый простой и дешевый на рынке</td>
+                    </tr>
+                    <tr>
+                        <th>Жидкостное охлаждение</th>
+                        <td>Использует жидкость для отвода тепла от компонентов компьютера</td>
+                    </tr>
+                    
+                    
+                </tbody>
+            </table>
+            
+            
+            <section class="cooling-systems-info">
+                <h2>Системы охлаждения компьютера</h2>
+                <p>Системы охлаждения компьютера играют важную роль в поддержании оптимальной температуры внутри компонентов. Они помогают предотвратить перегрев, который может привести к снижению производительности и даже повреждению оборудования.</p>
+                
+
+                
+                <p>Структура системы охлаждения компьютера обычно включает в себя несколько ключевых компонентов:</p>
+                <ul>
+                    <li>Вентиляторы:</li>
+                    <ul>
+                        <li>Это основные устройства, которые создают поток воздуха внутри корпуса компьютера. Они могут быть установлены на процессоре (<dfn title="Central Processing Unit">CPU</dfn> cooler), видеокарте, корпусе и других компонентах.</li>
+                    </ul>
+                    <li>Радиаторы:</li>
+                    <ul>
+                        <li>В системах жидкостного охлаждения радиаторы используются для отвода тепла от жидкости, циркулирующей через компоненты компьютера.</li>
+                    </ul>
+                    <li>Тепловые трубки:</li>
+                    <ul>
+                        <li>Эффективно передают тепло от горячих компонентов (<dfn title="CPU GPU">например, процессора или видеокарты</dfn>) к радиаторам или вентиляторам для дальнейшего отвода.</li>
+                    </ul>
+                    <li>Термопаста:</li>
+                    <ul>
+                        <li>Применяется для улучшения контакта между поверхностью компонента (<dfn title="CPU">например, процессора</dfn>) и его охладителем, увеличивая теплопередачу.</li>
+                    </ul>
+                </ul>
+                <p>Выбор системы охлаждения зависит от требований пользователя, типа компонентов и бюджета. Кроме того, правильная установка и обслуживание системы охлаждения также играют важную роль в поддержании эффективной работы компьютера.</p>
+                <p>Системы охлаждения играют ключевую роль в обеспечении стабильной работы компьютера. Они позволяют поддерживать оптимальные температурные режимы, что способствует долговечности и производительности оборудования. Помимо основных компонентов, существуют различные модификации систем охлаждения, включая водяные блоки, термоэлектрические системы и пассивные охладители. Выбор конкретной системы охлаждения зависит от интенсивности использования компьютера, его конфигурации и предпочтений пользователя. Некоторые пользователи предпочитают создавать собственные системы охлаждения, настраивая их под свои нужды и требования.</p>
+                <p>Одним из важных аспектов систем охлаждения является их шумовая эффективность. Многие пользователи стремятся к тому, чтобы их компьютер работал тихо, поэтому выбирают более тихие модели вентиляторов и радиаторов. Кроме того, современные системы охлаждения часто имеют возможность регулирования скорости вращения вентиляторов, что позволяет балансировать между производительностью и шумом. При выборе системы охлаждения важно также учитывать размеры компьютерного корпуса и его конструкцию, чтобы обеспечить достаточное охлаждение всех компонентов.</p>
+                <p>Некоторые пользователи предпочитают создавать собственные системы охлаждения, такие как кастомные водяные циклы. Это позволяет им точно подобрать компоненты и настроить систему под свои нужды. Однако, такие подходы требуют более высоких затрат времени и денег, а также требуют определенных навыков в сфере сборки компьютеров и охлаждения. В целом, системы охлаждения представляют собой важный аспект при сборке и эксплуатации компьютера, и правильный выбор может существенно повлиять на его производительность и долговечность.</p>
+                <p>Системы охлаждения компьютера являются неотъемлемой частью его функционирования, особенно при высоких нагрузках, таких как игры или ресурсоемкие задачи. При проектировании компьютерной системы следует учитывать требования к охлаждению каждого компонента, чтобы избежать проблем с перегревом и снижением производительности. Существует множество методов охлаждения, от воздушного до жидкостного, каждый из которых имеет свои преимущества и недостатки. Выбор конкретной системы охлаждения зависит от целей пользователя, его бюджета и технических характеристик компонентов.</p>
+                <p>Важно также отметить, что хорошая система охлаждения может продлить срок службы компонентов компьютера и снизить вероятность их выхода из строя. Это особенно актуально для процессоров и видеокарт, которые часто являются наиболее нагруженными компонентами в системе. Регулярная очистка от пыли и проверка работоспособности вентиляторов и радиаторов также являются важными процедурами для поддержания эффективности системы охлаждения на протяжении всего срока её эксплуатации.</p>
+                <p>В завершение, хочется отметить, что тема охлаждения компьютера достаточно обширна и динамична. С появлением новых технологий и компонентов появляются и новые способы охлаждения, а производители постоянно работают над улучшением своих продуктов. Поэтому при выборе системы охлаждения стоит обращать внимание не только на текущие технические характеристики, но и на перспективы развития данной области.</p>
+
+                <section class="center-picture">
+                <mark>
+                <picture>
+                    <img src="stvhk.png" alt="Stephen Hawking" width="400">
+                </picture>
+                </mark>
+                </section>
+                
+                <blockquote>
+                    <p><mark>Цитата, <cite>Стивен Хокинг</cite>: <q>необходимость охлаждения компьютера вентилятором говорит о том, что, когда компьютер записывает что-то в память, общий беспорядок во вселенной все-таки увеличивается.</q></mark></p>
+                </blockquote>
+            </section>
+
+            <h2>Популярные производители систем охлаждения</h2>
+            <aside>
+            <ul>
+                <li><strong><em>Cooler Master</em></strong></li>
+                <li><strong><em>Noctua</em></strong></li>
+                <li><strong><em>Corsair</em></strong></li>
+                <li><strong><em>NZXT</em></strong></li>
+            </ul>
+            </aside>
+            <div class="manufacturer-images">
+                <img src="coolermaster.jpg" alt="Cooler Master">
+                <img src="noctua.jpg" alt="Noctua">
+                <img src="corsair.jpg" alt="Corsair">
+                <img src="nzxt.jpg" alt="NZXT">
+            </div>
+
+            <hr>
+        </article>
+    </main>
+    <!-- галерея -->
+    <div id="gallery">
+        <button id="leftarr"><i class="fa fa-arrow-left"></i></button>  
+        <img src = "img/barrow.png" id = "img" ></img> 
+        <button id="rightarr"><i class="fa fa-arrow-right"></i></button>
+    </div>
+    <article class="form-container">
+    <?php
+// Подключение к базе данных
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "laba6"; 
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Проверка подключения
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Проверка, была ли отправлена форма для добавления новой модели
+if(isset($_POST['add_model_submit'])) {
+    $new_model_name = $_POST['new_model_name'];
+    $new_model_description = $_POST['new_model_description'];
+    $new_cooling_type_id = $_POST['new_cooling_type_id'];
+    $sql_insert_model = "INSERT INTO models (cooling_type_id, model_name, description) VALUES ('$new_cooling_type_id', '$new_model_name', '$new_model_description')";
+    $conn->query($sql_insert_model);
+}
+
+// Проверка, была ли отправлена форма для добавления нового типа охлаждения
+if(isset($_POST['add_cooling_type_submit'])) {
+    $new_cooling_type_name = $_POST['new_cooling_type_name'];
+    $new_cooling_type_description = $_POST['new_cooling_type_description'];
+    $sql_insert_cooling_type = "INSERT INTO cooling_types (type_name, description) VALUES ('$new_cooling_type_name', '$new_cooling_type_description')";
+    $conn->query($sql_insert_cooling_type);
+}
+
+// Выполнение SQL запроса для таблицы cooling_types
+$sql_cooling_types = "SELECT * FROM cooling_types";
+$result_cooling_types = $conn->query($sql_cooling_types);
+
+// Выполнение SQL запроса для таблицы models
+$sql_models = "SELECT models.id, models.model_name, models.description, cooling_types.type_name FROM models INNER JOIN cooling_types ON models.cooling_type_id = cooling_types.id";
+$result_models = $conn->query($sql_models);
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cooling Types and Models</title>
+</head>
+<body>
+    <h2>Типы систем охлаждения</h2>
+    <table border="1">
+        <tr>
+            <th>Тип системы охлаждения</th>
+            <th>Описание</th>
+            <th>Редактировать</th>
+            <th>Удалить</th>
+        </tr>
+        <?php
+        while($row = $result_cooling_types->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . $row["type_name"] . "</td>";
+            echo "<td>" . $row["description"] . "</td>";
+            echo "<td><a href='edit_cooling_type.php?id=" . $row["id"] . "'>Редактировать</a></td>";
+            echo "<td><a href='delete_cooling_type.php?id=" . $row["id"] . "' onclick='return confirm(\"Вы уверены?\")'>Удалить</a></td>";
+            echo "</tr>";
+        }
+        ?>
+    </table>
+
+    <h2>Добавить новый тип</h2>
+    <form method="post">
+        Тип системы: <input type="text" name="new_cooling_type_name"><br>
+        Описание: <input type="text" name="new_cooling_type_description"><br>
+        <input type="submit" name="add_cooling_type_submit" value="Добавить">
+    </form>
+
+    <h2>Модели систем охлаждения</h2>
+    <table border="1">
+        <tr>
+            <th>Название модели</th>
+            <th>Описание</th>
+            <th>Тип</th>
+            <th>Редактирование</th>
+            <th>Удаление</th>
+        </tr>
+        <?php
+        while($row = $result_models->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . $row["model_name"] . "</td>";
+            echo "<td>" . $row["description"] . "</td>";
+            echo "<td>" . $row["type_name"] . "</td>";
+            echo "<td><a href='edit_model.php?id=" . $row["id"] . "'>Редактировать</a></td>";
+            echo "<td><a href='delete_model.php?id=" . $row["id"] . "' onclick='return confirm(\"Вы уверены?\")'>Удалить</a></td>";
+            echo "</tr>";
+        }
+        ?>
+    </table>
+
+    <h2>Добавить новую модель</h2>
+    <form method="post">
+        Название модели: <input type="text" name="new_model_name"><br>
+        Описание: <input type="text" name="new_model_description"><br>
+        Тип системы охлаждения: 
+        <select name="new_cooling_type_id">
+            <?php
+            $result_cooling_types->data_seek(0); // Возврат к началу результата
+            while($row = $result_cooling_types->fetch_assoc()) {
+                echo "<option value='" . $row["id"] . "'>" . $row["type_name"] . "</option>";
+            }
+            ?>
+        </select><br>
+        <input type="submit" name="add_model_submit" value="Добавить">
+    </form>
+</body>
+</html>
+<?php
+// Закрытие соединения с базой данных
+$conn->close();
+?>
+</article>
+<article class="form-container">
+<head>
+    <meta charset="UTF-8">
+    <title>Cooling Types and Models with AJAX</title>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <h2>Типы систем охлаждения</h2>
+    <table id="coolingTypesTable" border="1">
+        <tr><th>Тип системы охлаждения</th><th>Описание</th><th>Редактировать</th><th>Удалить</th></tr>
+    </table>
+
+    <h2>Добавить новый тип</h2>
+    <form id="addCoolingTypeForm">
+        Тип системы: <input type="text" id="newCoolingTypeName"><br>
+        Описание: <input type="text" id="newCoolingTypeDescription"><br>
+        <button type="button" onclick="addCoolingType()">Добавить</button>
+    </form>
+
+    <h2>Модели систем охлаждения</h2>
+    <table id="modelsTable" border="1">
+        <tr><th>Название модели</th><th>Описание</th><th>Тип</th><th>Редактирование</th><th>Удаление</th></tr>
+    </table>
+
+    <h2>Добавить новую модель</h2>
+    <form id="addModelForm">
+        Название модели: <input type="text" id="newModelName"><br>
+        Описание: <input type="text" id="newModelDescription"><br>
+        Тип системы охлаждения: 
+        <select id="newCoolingTypeId"></select><br>
+        <button type="button" onclick="addModel()">Добавить</button>
+    </form>
+
+    <h2>Информация о браузере</h2>
+    <div id="browserInfo"></div>
+
+    <!-- Добавленный блок для вывода предупреждений -->
+    <div id="errorMessage" style="color: red; font-weight: bold;"></div>
+</body>
+</article>
+        <article class="form-container">
+        <?php
+
+// Функция для вывода таблицы с данными из XML
+function displayTable($xml, $xslFilePath) {
+    $xsl = new DOMDocument();
+    $xsl->load($xslFilePath);
+
+    $proc = new XSLTProcessor();
+    $proc->importStyleSheet($xsl);
+
+    return $proc->transformToXML($xml);
+}
+
+// Загрузка и валидация основного XML файла
+$coolingSystemXML = new DOMDocument();
+$coolingSystemXML->load("cooling_system.xml");
+
+if ($coolingSystemXML->schemaValidate("cooling_system.xsd")) {
+    echo "cooling_system.xml is valid.<br>";
+} else {
+    echo "cooling_system.xml is NOT valid.<br>";
+}
+// Загрузка и валидация второго XML файла
+$coolingSystemNestedXML = new DOMDocument();
+$coolingSystemNestedXML->load("cooling_system_nested.xml");
+
+if ($coolingSystemNestedXML->schemaValidate("cooling_system_nested.xsd")) {
+    echo "cooling_system_nested.xml is valid.<br>";
+} else {
+    echo "cooling_system_nested.xml is NOT valid.<br>";
+}
+
+// Выполнение трансформации и вывод результата
+echo "<h2>Contents of cooling_system.xml:</h2>";
+echo displayTable($coolingSystemXML, "cooling_system.xsl");
+
+
+
+
+
+// Вывод данных из второго XML файла
+echo "<h2>Contents of cooling_system_nested.xml:</h2>";
+
+
+$coolingTypes = $coolingSystemNestedXML->getElementsByTagName("CoolingType");
+if ($coolingTypes->length > 0) {
+    echo "<h3>Cooling Types:</h3>";
+    echo "<table border='1'>";
+    echo "<tr><th>TypeName</th><th>Description</th><th>Manufacturer</th><th>ImageURL</th><th>Models</th></tr>";
+
+    foreach ($coolingTypes as $coolingType) {
+        $typeName = $coolingType->getElementsByTagName("TypeName")->item(0)->textContent;
+        $description = $coolingType->getElementsByTagName("Description")->item(0)->textContent;
+        $manufacturer = $coolingType->getElementsByTagName("Manufacturer")->item(0)->textContent;
+        $imageURL = $coolingType->getElementsByTagName("ImageURL")->item(0)->textContent;
+
+        echo "<tr>";
+        echo "<td>$typeName</td>";
+        echo "<td>$description</td>";
+        echo "<td>$manufacturer</td>";
+        echo "<td><img src='$imageURL' alt='$typeName' width='100'/></td>";
+
+        $models = $coolingType->getElementsByTagName("Model");
+        echo "<td>";
+        if ($models->length > 0) {
+            echo "<table border='1'>";
+            echo "<tr><th>ModelName</th><th>Description</th><th>ReleaseDate</th></tr>";
+            foreach ($models as $model) {
+                $modelName = $model->getElementsByTagName("ModelName")->item(0)->textContent;
+                $modelDescription = $model->getElementsByTagName("Description")->item(0)->textContent;
+                $releaseDate = $model->getElementsByTagName("ReleaseDate")->item(0)->textContent;
+                echo "<tr><td>$modelName</td><td>$modelDescription</td><td>$releaseDate</td></tr>";
+            }
+            echo "</table>";
+        } else {
+            echo "No models available.";
+        }
+        echo "</td>";
+        echo "</tr>";
+    }
+
+    echo "</table>";
+} else {
+    echo "No cooling types found.";
+}
+?>
+
+
+
+
+        </article>
+    <footer style="background-image: linear-gradient(to right, #6d6d6d, #333);">
+        <address>
+            <p>© 2024 Системы охлаждения компьютера. Все права защищены. <time datetime="2024-02-21">21 февраля 2024</time></p>
+        </address>
+    </footer>
+    
+    <script type="text/javascript" src="scripts/gallery.js"></script>
+    <script type="text/javascript" src="scripts/tablescenarios.js"></script>
+</body>
+</html>
