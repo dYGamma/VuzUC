@@ -137,7 +137,7 @@ export function Authentification() {
         </div>
         <div className="hidden bg-muted lg:block">
           <img
-            src="/placeholder.svg"
+            src="/doooo.gif"
             alt="Изображение"
             width="50%"
             height={"100%"}
