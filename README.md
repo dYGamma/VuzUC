@@ -2,4 +2,4 @@
 
 ### За остальные семы работы либо не сохранились, либо лежат где-то в потаённых углах по ссылке ниже:
 
-- **[[Клик](dYGamma/FullDich)](https://github.com/dYGamma/FullDich)**
+- **[example-repo](https://github.com/dYGamma/FullDich)**
