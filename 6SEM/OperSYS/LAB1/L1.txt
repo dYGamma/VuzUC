@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Переменная с номером варианта (константа):
+TASKID=16
+
+# Дополнительные переменные (должны вычисляться динамически):
+VAR_1=$(wc -l < "dns-tunneling.log")
+echo $VAR_1
+
+awk -F'\t' '$12 == 3 {print $5}' dns-tunneling.log | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4 | uniq -c | awk '{print $2 "\t" $1}' | sort -k2,2nr -s > results.txt
+
+VAR_2=$(wc -l < results.txt)
+echo "VAR_2: $VAR_2"
