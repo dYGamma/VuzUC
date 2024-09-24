@@ -11,7 +11,7 @@ def generate_poisson_process(lmbda, T, size=500):
 
 # Функция для построения графиков
 def plot_processes(lmbda1, lmbda2, T, num_realizations=50):
-    fig, ax = plt.subplots(1, 3, figsize=(12, 6))
+    fig, axes = plt.subplots(1, 3, figsize=(15, 6))
 
     # Генерация пуассоновских потоков
     events1 = [generate_poisson_process(lmbda1, T) for _ in range(num_realizations)]
@@ -22,20 +22,18 @@ def plot_processes(lmbda1, lmbda2, T, num_realizations=50):
 
     # Построение графиков потоков
     for e in events1:
-        ax[0].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    ax[0].set_title(f'Пуассоновский поток λ1={lmbda1}')
+        axes[0].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
+    axes[0].set_title(f'Пуассоновский поток λ1={lmbda1}')
     
     for e in events2:
-        ax[1].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    ax[1].set_title(f'Пуассоновский поток λ2={lmbda2}')
+        axes[1].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
+    axes[1].set_title(f'Пуассоновский поток λ2={lmbda2}')
     
     for e in sum_events:
-        ax[2].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    ax[2].set_title('Сумма пуассоновских потоков')
+        axes[2].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
+    axes[2].set_title('Сумма пуассоновских потоков')
 
     plt.tight_layout()
-    
-    # Отображение графиков в Streamlit
     st.pyplot(fig)
 
     return events1, events2, sum_events
