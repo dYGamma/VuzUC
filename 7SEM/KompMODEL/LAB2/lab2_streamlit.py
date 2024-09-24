@@ -1,7 +1,7 @@
-import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import expon, poisson, kstest, chisquare
+import streamlit as st
 
 # Функция для генерации пуассоновских потоков
 def generate_poisson_process(lmbda, T, size=500):
@@ -11,7 +11,7 @@ def generate_poisson_process(lmbda, T, size=500):
 
 # Функция для построения графиков
 def plot_processes(lmbda1, lmbda2, T, num_realizations=50):
-    fig, axes = plt.subplots(1, 3, figsize=(15, 6))
+    fig, ax = plt.subplots(1, 3, figsize=(12, 6))
 
     # Генерация пуассоновских потоков
     events1 = [generate_poisson_process(lmbda1, T) for _ in range(num_realizations)]
@@ -22,18 +22,20 @@ def plot_processes(lmbda1, lmbda2, T, num_realizations=50):
 
     # Построение графиков потоков
     for e in events1:
-        axes[0].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    axes[0].set_title(f'Пуассоновский поток λ1={lmbda1}')
+        ax[0].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
+    ax[0].set_title(f'Пуассоновский поток λ1={lmbda1}')
     
     for e in events2:
-        axes[1].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    axes[1].set_title(f'Пуассоновский поток λ2={lmbda2}')
+        ax[1].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
+    ax[1].set_title(f'Пуассоновский поток λ2={lmbda2}')
     
     for e in sum_events:
-        axes[2].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    axes[2].set_title('Сумма пуассоновских потоков')
+        ax[2].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
+    ax[2].set_title('Сумма пуассоновских потоков')
 
     plt.tight_layout()
+    
+    # Отображение графиков в Streamlit
     st.pyplot(fig)
 
     return events1, events2, sum_events
@@ -59,7 +61,7 @@ def compute_statistics(events, lmbda, T):
     observed_counts = np.bincount(counts, minlength=len(expected_counts))
     expected_counts = expected_counts[:len(observed_counts)]
     
-    # Нормализация: делаем суммы наблюдаемых и ожидаемых частот равными
+    # Нормализация
     expected_counts *= observed_counts.sum() / expected_counts.sum()
 
     chi2_stat, chi2_pvalue = chisquare(observed_counts, f_exp=expected_counts)
@@ -75,56 +77,63 @@ def compute_statistics(events, lmbda, T):
     }
 
 def main():
-    st.title("Моделирование пуассоновских потоков")
-    
+    # Пользовательский ввод
     N = st.number_input("Введите значение N", value=14)
-    
+
     # Промежуток наблюдения
     T1 = N
     T2 = N + 100
     T = T2 - T1  # Время наблюдения
 
     # Параметры потоков
-    lmbda1 = (N + 8) / (N + 24)
-    lmbda2 = (N + 9) / (N + 25)
+    lmbda1 = (N + 8) / (N + 24)  # Интенсивность первого потока
+    lmbda2 = (N + 9) / (N + 25)  # Интенсивность второго потока
 
-    num_realizations = 50
+    num_realizations = 50  # Количество реализаций
 
     # Визуализация потоков
     events1, events2, sum_events = plot_processes(lmbda1, lmbda2, T, num_realizations)
 
-    # Расчет статистических характеристик
+    # Расчет статистических характеристик для каждого потока
     stats1 = compute_statistics(events1, lmbda1, T)
     stats2 = compute_statistics(events2, lmbda2, T)
     stats_sum = compute_statistics(sum_events, lmbda1 + lmbda2, T)
 
     # Вывод результатов
-    st.subheader(f"Статистика для процесса с λ1={lmbda1}")
-    st.write(f"Эмпирическая интенсивность λ: {stats1['empirical_lambda']}")
-    st.write(f"Теоретическая дисперсия: {stats1['theoretical_var']}")
-    st.write(f"Эмпирическая дисперсия: {stats1['empirical_var']}")
-    st.write(f"Статистика Колмогорова-Смирнова: {stats1['ks_stat']}")
-    st.write(f"p-значение Колмогорова-Смирнова: {stats1['ks_pvalue']}")
-    st.write(f"Статистика χ²: {stats1['chi2_stat']}")
-    st.write(f"p-значение χ²: {stats1['chi2_pvalue']}")
-    
-    st.subheader(f"Статистика для процесса с λ2={lmbda2}")
-    st.write(f"Эмпирическая интенсивность λ: {stats2['empirical_lambda']}")
-    st.write(f"Теоретическая дисперсия: {stats2['theoretical_var']}")
-    st.write(f"Эмпирическая дисперсия: {stats2['empirical_var']}")
-    st.write(f"Статистика Колмогорова-Смирнова: {stats2['ks_stat']}")
-    st.write(f"p-значение Колмогорова-Смирнова: {stats2['ks_pvalue']}")
-    st.write(f"Статистика χ²: {stats2['chi2_stat']}")
-    st.write(f"p-значение χ²: {stats2['chi2_pvalue']}")
-    
+    st.subheader("Статистика для процесса с λ1={:.2f}".format(lmbda1))
+    st.markdown(f"""
+    - **Эмпирическая интенсивность λ**: {stats1['empirical_lambda']:.4f}
+    - **Теоретическая дисперсия**: {stats1['theoretical_var']:.4f}
+    - **Эмпирическая дисперсия**: {stats1['empirical_var']:.4f}
+    - **Статистика Колмогорова-Смирнова**: {stats1['ks_stat']:.4f}
+    - **p-значение Колмогорова-Смирнова**: {stats1['ks_pvalue']:.4f}
+    - **Статистика χ²**: {stats1['chi2_stat']:.4f}
+    - **p-значение χ²**: {stats1['chi2_pvalue']:.4f}
+    """)
+
+    st.subheader("Статистика для процесса с λ2={:.2f}".format(lmbda2))
+    st.markdown(f"""
+    - **Эмпирическая интенсивность λ**: {stats2['empirical_lambda']:.4f}
+    - **Теоретическая дисперсия**: {stats2['theoretical_var']:.4f}
+    - **Эмпирическая дисперсия**: {stats2['empirical_var']:.4f}
+    - **Статистика Колмогорова-Смирнова**: {stats2['ks_stat']:.4f}
+    - **p-значение Колмогорова-Смирнова**: {stats2['ks_pvalue']:.4f}
+    - **Статистика χ²**: {stats2['chi2_stat']:.4f}
+    - **p-значение χ²**: {stats2['chi2_pvalue']:.4f}
+    """)
+
     st.subheader("Статистика для суммы процессов (λ1 + λ2)")
-    st.write(f"Эмпирическая интенсивность λ: {stats_sum['empirical_lambda']}")
-    st.write(f"Теоретическая дисперсия: {stats_sum['theoretical_var']}")
-    st.write(f"Эмпирическая дисперсия: {stats_sum['empirical_var']}")
-    st.write(f"Статистика Колмогорова-Смирнова: {stats_sum['ks_stat']}")
-    st.write(f"p-значение Колмогорова-Смирнова: {stats_sum['ks_pvalue']}")
-    st.write(f"Статистика χ²: {stats_sum['chi2_stat']}")
-    st.write(f"p-значение χ²: {stats_sum['chi2_pvalue']}")
+    st.markdown(f"""
+    - **Эмпирическая интенсивность λ**: {stats_sum['empirical_lambda']:.4f}
+    - **Теоретическая дисперсия**: {stats_sum['theoretical_var']:.4f}
+    - **Эмпирическая дисперсия**: {stats_sum['empirical_var']:.4f}
+    - **Статистика Колмогорова-Смирнова**: {stats_sum['ks_stat']:.4f}
+    - **p-значение Колмогорова-Смирнова**: {stats_sum['ks_pvalue']:.4f}
+    - **Статистика χ²**: {stats_sum['chi2_stat']:.4f}
+    - **p-значение χ²**: {stats_sum['chi2_pvalue']:.4f}
+    """)
+
 
 if __name__ == "__main__":
+    st.title("Моделирование пуассоновских потоков")
     main()
