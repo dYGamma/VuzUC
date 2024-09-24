@@ -23,16 +23,19 @@ def plot_processes(lmbda1, lmbda2, T, num_realizations=50):
     # Построение графиков потоков
     for e in events1:
         ax[0].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    ax[0].set_title(f'Пуас-ский поток λ1={lmbda1}')
-
+    ax[0].set_title(f'Пуассоновский поток λ1={lmbda1}')
+    
     for e in events2:
         ax[1].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    ax[1].set_title(f'Пуас-ский поток λ2={lmbda2}')
+    ax[1].set_title(f'Пуассоновский поток λ2={lmbda2}')
     
     for e in sum_events:
         ax[2].step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    ax[2].set_title('Сумма потоков')
+    ax[2].set_title('Сумма пуассоновских потоков')
 
+    plt.tight_layout()
+    
+    # Отображение графиков в Streamlit
     st.pyplot(fig)
 
     return events1, events2, sum_events
