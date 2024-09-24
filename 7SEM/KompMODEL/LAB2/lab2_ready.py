@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 from scipy.stats import expon, poisson, kstest, chisquare
 
 # Функция для генерации пуассоновских потоков
-def generate_poisson_process(lmbda, T, size=50):
+def generate_poisson_process(lmbda, T, size=500):
     inter_arrival_times = -np.log(np.random.rand(size)) / lmbda
     event_times = np.cumsum(inter_arrival_times)
     return event_times[event_times <= T]
 
 # Функция для построения графиков
-def plot_processes(lmbda1, lmbda2, T, num_realizations=100):
+def plot_processes(lmbda1, lmbda2, T, num_realizations=1000):
     plt.figure(figsize=(12, 6))
 
     # Генерация пуассоновских потоков
@@ -23,17 +23,17 @@ def plot_processes(lmbda1, lmbda2, T, num_realizations=100):
     plt.subplot(1, 3, 1)
     for e in events1:
         plt.step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    plt.title(f'Пуассоновский поток λ1={lmbda1}')
+    plt.title(f'Пуас-ский поток λ1={lmbda1}')
     
     plt.subplot(1, 3, 2)
     for e in events2:
         plt.step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    plt.title(f'Пуассоновский поток λ2={lmbda2}')
+    plt.title(f'Пуас-ский поток λ2={lmbda2}')
     
     plt.subplot(1, 3, 3)
     for e in sum_events:
         plt.step(e, np.arange(1, len(e) + 1), where='post', alpha=0.3)
-    plt.title('Сумма пуассоновских потоков')
+    plt.title('Сумма пуассоновских потоков ')
 
     plt.tight_layout()
     plt.show()
@@ -86,7 +86,7 @@ def main(N):
     lmbda1 = (N + 8) / (N + 24)  # Интенсивность первого потока
     lmbda2 = (N + 9) / (N + 25)  # Интенсивность второго потока
 
-    num_realizations = 100  # Количество реализаций для увеличенной точности
+    num_realizations = 1000  # Увеличиваем количество реализаций для большей точности
 
     # Визуализация потоков
     events1, events2, sum_events = plot_processes(lmbda1, lmbda2, T, num_realizations)
@@ -127,4 +127,3 @@ def main(N):
 if __name__ == "__main__":
     N = 14  # Задай значение N в зависимости от номера студента
     main(N)
-
