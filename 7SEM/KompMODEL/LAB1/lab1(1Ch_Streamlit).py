@@ -55,6 +55,8 @@ with col2:
         # Решаем задачу оптимизации
         results = solve_optimization_problem(labor, metal, plastic, paint)
 
+        st.subheader(f"Максимальная прибыль:\n :green[{results['profit']}] р.")
+
         # Выводим результаты
         st.subheader("Оптимальное количество холодильников:")
         st.markdown(f"""
@@ -67,4 +69,4 @@ with col2:
         | Марка 5   | {results['x5']} |
         """)
 
-        st.subheader(f"Максимальная прибыль:\n :green[{results['profit']}] р.")
+        
