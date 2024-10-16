@@ -168,9 +168,6 @@ def create_gru_model(input_shape):
 # =============================================================
 
 
-
-
-
 # 8. Создание и обучение моделей
 # =============================================================
 def train_models(X_full, X_filtered, y, preprocessor_full, preprocessor_filtered, scaler_full, scaler_filtered):
