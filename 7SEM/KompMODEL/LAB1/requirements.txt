@@ -1,3 +1,4 @@
 streamlit==1.22.0
 pulp==2.7.0
 matplotlib
+sympy
