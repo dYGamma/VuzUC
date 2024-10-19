@@ -49,7 +49,7 @@ x_vals = np.linspace(np.pi/4, np.pi/2, 500)
 y_vals = y_func(x_vals)
 
 # Построение графика
-plt.plot(x_vals, y_vals, label=r'$y(x) = \ln|\sin(x)|$')
+plt.plot(x_vals, y_vals, label=r'$y(x) = -\log(\tan^2(x/2) + 1) + \log(\tan(x/2)) + 0.693$')
 plt.xlabel('x')
 plt.ylabel('y(x)')
 plt.title('График решения вариационной задачи')
