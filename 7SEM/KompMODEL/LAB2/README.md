@@ -1,2 +1,2 @@
 # Деплой лабы:
-https://lab2pus.streamlit.app/
+https://i6qehykctnh9madhdxpbth.streamlit.app/
