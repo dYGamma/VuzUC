@@ -89,13 +89,25 @@ def main():
 
     num_realizations = 50  # Количество реализаций
 
-    # Визуализация потоков
-    events1, events2, sum_events = plot_processes(lmbda1, lmbda2, T, num_realizations)
+    # Инициализация счётчиков
+    confirmed_count = 0
+    rejected_count = 0
+    total_runs = 100
 
-    # Расчет статистических характеристик для каждого потока
-    stats1 = compute_statistics(events1, lmbda1, T)
-    stats2 = compute_statistics(events2, lmbda2, T)
-    stats_sum = compute_statistics(sum_events, lmbda1 + lmbda2, T)
+    for _ in range(total_runs):
+        # Визуализация потоков
+        events1, events2, sum_events = plot_processes(lmbda1, lmbda2, T, num_realizations)
+
+        # Расчет статистических характеристик для каждого потока
+        stats1 = compute_statistics(events1, lmbda1, T)
+        stats2 = compute_statistics(events2, lmbda2, T)
+        stats_sum = compute_statistics(sum_events, lmbda1 + lmbda2, T)
+
+        # Определение подтверждённых и отвергнутых теорий
+        if stats1['ks_pvalue'] > 0.05 and stats2['ks_pvalue'] > 0.05:
+            confirmed_count += 1
+        else:
+            rejected_count += 1
 
     # Вывод результатов
     st.subheader("Статистика для процесса с λ1={:.2f}".format(lmbda1))
@@ -131,6 +143,13 @@ def main():
     - **p-значение χ²**: {stats_sum['chi2_pvalue']:.4f}
     """)
 
+    # Вывод результатов
+    st.subheader("Статистика для процесса с λ1={:.2f}".format(lmbda1))
+    st.markdown(f"""
+    - **Подтвержденные теории**: {confirmed_count}
+    - **Отвергнутые теории**: {rejected_count}
+    - **Всего запусков**: {total_runs}
+    """)
 
 if __name__ == "__main__":
     st.title("Моделирование пуассоновских потоков")
