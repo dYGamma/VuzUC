@@ -34,9 +34,7 @@ def plot_processes(lmbda1, lmbda2, T, num_realizations=50):
     axes[2].set_title('Сумма пуассоновских потоков')
 
     plt.tight_layout()
-    st.pyplot(fig)
-
-    return events1, events2, sum_events
+    return fig, events1, events2, sum_events
 
 # Функция для расчета статистических характеристик
 def compute_statistics(events, lmbda, T):
@@ -75,6 +73,7 @@ def compute_statistics(events, lmbda, T):
     }
 
 def main():
+    
     # Пользовательский ввод
     N = st.number_input("Введите значение N", value=14)
 
@@ -89,27 +88,72 @@ def main():
 
     num_realizations = 50  # Количество реализаций
 
-    # Инициализация счётчиков
-    confirmed_count = 0
-    rejected_count = 0
+    # Инициализация счётчиков в состоянии сессии
+    if 'confirmed_count' not in st.session_state:
+        st.session_state.confirmed_count = 0
+    if 'rejected_count' not in st.session_state:
+        st.session_state.rejected_count = 0
     total_runs = 100
 
-    for _ in range(total_runs):
-        # Визуализация потоков
-        events1, events2, sum_events = plot_processes(lmbda1, lmbda2, T, num_realizations)
+    # Чекбокс для отображения графиков
+    show_plots = st.checkbox("Показать графики генерации потоков", value=True)
 
-        # Расчет статистических характеристик для каждого потока
-        stats1 = compute_statistics(events1, lmbda1, T)
-        stats2 = compute_statistics(events2, lmbda2, T)
-        stats_sum = compute_statistics(sum_events, lmbda1 + lmbda2, T)
+    # Инициализация статус-бара
+    progress_bar = st.progress(0)
 
-        # Определение подтверждённых и отвергнутых теорий
-        if stats1['ks_pvalue'] > 0.05 and stats2['ks_pvalue'] > 0.05:
-            confirmed_count += 1
-        else:
-            rejected_count += 1
+    # Инициализация состояния сессии для хранения графиков
+    if 'plots' not in st.session_state:
+        st.session_state.plots = []
+    if 'stats' not in st.session_state:
+        st.session_state.stats = []
+
+    # Генерация графиков и статистики только при первом запуске
+    if len(st.session_state.plots) == 0:
+        for run in range(total_runs):
+            # Визуализация потоков
+            if show_plots:
+                fig, events1, events2, sum_events = plot_processes(lmbda1, lmbda2, T, num_realizations)
+                st.session_state.plots.append(fig)
+
+            # Расчет статистических характеристик для каждого потока
+            stats1 = compute_statistics(events1, lmbda1, T)
+            stats2 = compute_statistics(events2, lmbda2, T)
+            stats_sum = compute_statistics(sum_events, lmbda1 + lmbda2, T)
+            st.session_state.stats.append((stats1, stats2, stats_sum))
+
+            # Определение подтверждённых и отвергнутых теорий
+            if stats1['ks_pvalue'] > 0.05 and stats2['ks_pvalue'] > 0.05:
+                st.session_state.confirmed_count += 1
+            else:
+                st.session_state.rejected_count += 1
+
+            # Обновление статус-бара
+            progress_bar.progress((run + 1) / total_runs)
+
+    # Выбор цикла для отображения графика
+    selected_run = st.selectbox("Выберите цикл для отображения графика", range(total_runs))
+    
+    if show_plots and selected_run < len(st.session_state.plots):
+        st.pyplot(st.session_state.plots[selected_run])  # Отображение выбранного графика
+
+    # Получаем статистику для выбранного цикла
+    if selected_run < len(st.session_state.stats):
+        stats1, stats2, stats_sum = st.session_state.stats[selected_run]
+
+    # Добавляем определение подтверждённых и отвергнутых теорий для выбранного цикла
+    is_theory_confirmed1 = stats1['ks_pvalue'] > 0.05
+    is_theory_confirmed2 = stats2['ks_pvalue'] > 0.05
+    is_theory_confirmed_sum = stats_sum['ks_pvalue'] > 0.05
+
+    # Определение подтверждённых и отвергнутых теорий
+    if stats1['ks_pvalue'] > 0.05 and stats2['ks_pvalue'] > 0.05 and stats1['chi2_pvalue'] > 0.05 and stats2['chi2_pvalue'] > 0.05:
+        st.session_state.confirmed_count += 1
+    else:
+        st.session_state.rejected_count += 1
 
     # Вывод результатов
+    stats1, stats2, stats_sum = st.session_state.stats[selected_run]
+
     st.subheader("Статистика для процесса с λ1={:.2f}".format(lmbda1))
     st.markdown(f"""
     - **Эмпирическая интенсивность λ**: {stats1['empirical_lambda']:.4f}
@@ -119,6 +163,8 @@ def main():
     - **p-значение Колмогорова-Смирнова**: {stats1['ks_pvalue']:.4f}
     - **Статистика χ²**: {stats1['chi2_stat']:.4f}
     - **p-значение χ²**: {stats1['chi2_pvalue']:.4f}
+    - **Теория подтверждена**: {"Да" if is_theory_confirmed1 else "Нет"}
+    - **Теория подтверждена по χ²**: {"Да" if stats1['chi2_pvalue'] > 0.05 else "Нет"}
     """)
 
     st.subheader("Статистика для процесса с λ2={:.2f}".format(lmbda2))
@@ -130,6 +176,8 @@ def main():
     - **p-значение Колмогорова-Смирнова**: {stats2['ks_pvalue']:.4f}
     - **Статистика χ²**: {stats2['chi2_stat']:.4f}
     - **p-значение χ²**: {stats2['chi2_pvalue']:.4f}
+    - **Теория подтверждена**: {"Да" if is_theory_confirmed2 else "Нет"}
+    - **Теория подтверждена по χ²**: {"Да" if stats1['chi2_pvalue'] > 0.05 else "Нет"}
     """)
 
     st.subheader("Статистика для суммы процессов (λ1 + λ2)")
@@ -141,13 +189,15 @@ def main():
     - **p-значение Колмогорова-Смирнова**: {stats_sum['ks_pvalue']:.4f}
     - **Статистика χ²**: {stats_sum['chi2_stat']:.4f}
     - **p-значение χ²**: {stats_sum['chi2_pvalue']:.4f}
+    - **Теория подтверждена**: {"Да" if is_theory_confirmed_sum else "Нет"}
+    - **Теория подтверждена по χ²**: {"Да" if stats1['chi2_pvalue'] > 0.05 else "Нет"}
     """)
 
-    # Вывод результатов
-    st.subheader("Статистика для процесса с λ1={:.2f}".format(lmbda1))
+    # Вывод общей статистики
+    st.subheader("Общая статистика")
     st.markdown(f"""
-    - **Подтвержденные теории**: {confirmed_count}
-    - **Отвергнутые теории**: {rejected_count}
+    - **Подтвержденные теории**: {st.session_state.confirmed_count}
+    - **Отвергнутые теории**: {st.session_state.rejected_count}
     - **Всего запусков**: {total_runs}
     """)
 
