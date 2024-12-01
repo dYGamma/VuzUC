@@ -13,17 +13,23 @@ PHEROMONE_CONSTANT = 300        # Константа феромона для м�
 
 # --- Шаг 1: Загрузка данных ---
 def load_coordinates(filename):
+    print(f"Загрузка данных из файла {filename}...")
     with open(filename, 'r') as file:
         lines = file.readlines()
     coords = np.array([list(map(float, line.strip().split()[1:])) for line in lines if line.strip() != "EOF"])
+    print("Данные загружены успешно!")
     return coords
 
 # --- Шаг 2: Вычисление матрицы расстояний ---
 def calculate_distance_matrix(coords):
-    return cdist(coords, coords, metric='euclidean')
+    print("Вычисление матрицы расстояний...")
+    dist_matrix = cdist(coords, coords, metric='euclidean')
+    print("Матрица расстояний вычислена успешно!")
+    return dist_matrix
 
 # --- Шаг 3: Реализация муравьиного алгоритма ---
 def ant_colony_optimization(coords, dist_matrix, n_ants, n_iterations, alpha, beta, evaporation_rate, pheromone_constant):
+    print(f"Запуск муравьиного алгоритма с {n_ants} муравьями и {n_iterations} поколениями...")
     n_cities = len(dist_matrix)
     pheromone = np.ones((n_cities, n_cities))  # начальные феромоны
     best_route = None
@@ -31,6 +37,7 @@ def ant_colony_optimization(coords, dist_matrix, n_ants, n_iterations, alpha, be
     all_best_routes = []  # Хранение лучших маршрутов каждого поколения
     
     for iteration in range(n_iterations):
+        print(f"Поколение {iteration + 1}/{n_iterations}...")
         routes = []
         route_lengths = []
         
@@ -69,6 +76,7 @@ def ant_colony_optimization(coords, dist_matrix, n_ants, n_iterations, alpha, be
         # Добавляем лучший маршрут текущего поколения
         all_best_routes.append((best_route, best_distance))
     
+    print("Алгоритм завершил работу!")
     return best_route, best_distance, all_best_routes
 
 # --- Шаг 4: Вероятности переходов между городами ---
@@ -86,6 +94,7 @@ def calculate_transition_probabilities(current_city, visited, pheromone, dist_ma
 
 # --- Шаг 5: Визуализация маршрутов ---
 def visualize_routes(coords, all_best_routes, final_best_route, optimal_route):
+    print("Визуализация результатов...")
     fig, axes = plt.subplots(1, 4, figsize=(24, 6))  # Добавляем четвертую ось
     
     # Левый график - лучшие маршруты каждого поколения
@@ -119,11 +128,14 @@ def visualize_routes(coords, all_best_routes, final_best_route, optimal_route):
     
     plt.tight_layout()
     plt.show()
+    print("Визуализация завершена.")
 
 # Дополнительно: Вычисление длины оптимального маршрута
 def calculate_optimal_route_distance(optimal_route, dist_matrix):
+    print("Вычисление длины оптимального маршрута...")
     distance = sum(dist_matrix[optimal_route[i], optimal_route[i+1]] for i in range(len(optimal_route) - 1))
     distance += dist_matrix[optimal_route[-1], optimal_route[0]]  # замыкаем маршрут
+    print(f"Длина оптимального маршрута: {distance}")
     return distance
 
 # Загрузка данных и запуск алгоритма

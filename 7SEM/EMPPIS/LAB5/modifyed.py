@@ -4,6 +4,11 @@ import time
 
 # Функция Эасома
 def fEaso(x):
+    """
+    Функция Эасома для двух переменных.
+    :param x: Массив с двумя элементами [x1, x2]
+    :return: Значение функции Эасома
+    """
     return -np.cos(x[0]) * np.cos(x[1]) * np.exp(-((x[0] - np.pi) ** 2 + (x[1] - np.pi) ** 2))
 
 # Параметры эволюционной стратегии
@@ -16,13 +21,13 @@ no_improvement_limit = 100       # Лимит поколений без улуч
 # Диапазоны для визуализации и ограничений популяции
 x_min_vis, x_max_vis = 0, 2 * np.pi
 
-# Инициализация начальной популяции в диапазоне от 0 до 2π
+# Инициализация начальной популяции в диапазоне от -100 до 100
 initial_population = np.random.uniform(-100, 100, (population_size, 2))
 
 # Начало замера времени
 start_time = time.time()
 
-best_fitness_history = []
+best_fitness_history = []  # История лучших значений фитнеса
 best_solution = initial_population[0]
 best_fitness = fEaso(best_solution)
 
@@ -46,13 +51,14 @@ ax.set_ylim([x_min_vis, x_max_vis])
 ax.set_zlim([-1.5, 0.5])  # Пределы для лучшей видимости углубления
 
 ax.view_init(elev=30, azim=240)
-ax.set_title('Оптимизация функции Эасома с помощью ЭС', fontsize=16)
+ax.set_title('Оптимизация функции Эасома с помощью стратегии', fontsize=16)
 ax.set_xlabel('x1', fontsize=14)
 ax.set_ylabel('x2', fontsize=14)
 ax.set_zlabel('f(x1, x2)', fontsize=14)
 
 # Основной цикл эволюционной стратегии
 no_improvement_count = 0
+text = ax.text2D(0.05, 0.95, '', transform=ax.transAxes, fontsize=12, verticalalignment='top')
 
 for generation in range(max_generations):
     # Оценка популяции
@@ -62,6 +68,7 @@ for generation in range(max_generations):
     current_best_fitness = np.min(fitness_values)
     best_idx = np.argmin(fitness_values)
 
+    # Обновление лучшего решения, если текущее решение лучше
     if current_best_fitness < best_fitness:
         best_fitness = current_best_fitness
         best_solution = initial_population[best_idx]
@@ -85,7 +92,7 @@ for generation in range(max_generations):
         # Мутация с вероятностью
         if np.random.rand() < mutation_probability:
             child = parent + np.random.normal(0, mutation_sigma, 2)
-            child = np.clip(child, x_min_vis, x_max_vis)
+            child = np.clip(child, x_min_vis, x_max_vis)  # Ограничиваем значения на допустимом диапазоне
         else:
             child = parent
         new_population.append(child)
@@ -95,6 +102,11 @@ for generation in range(max_generations):
     # Отображение текущей популяции
     ax.scatter(initial_population[:, 0], initial_population[:, 1], fEaso(initial_population.T), 
                color='blue', alpha=0.2)    
+
+    # Обновление текста на графике с текущей информацией
+    text.set_text(f'Поколение: {generation+1}/{max_generations}\n'
+                  f'Лучшее значение функции: {best_fitness:.6f}\n'
+                  f'Текущее время: {time.time() - start_time:.2f} секунд')
 
     plt.pause(0.1)  # Пауза для пошагового просмотра
 
