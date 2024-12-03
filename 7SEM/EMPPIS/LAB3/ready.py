@@ -6,7 +6,7 @@ import time
 import sys 
  
 # Параметры, которые можно изменить 
-FILENAME = "berlin52.txt"  # Имя файла с координатами городов 
+FILENAME = "LAB3/berlin52.txt"  # Имя файла с координатами городов 
 POPULATION_SIZE = 500       # Размер популяции 
 N_GENERATIONS = 1000         # Максимальное количество поколений 
 CX_PROB = 0.9                # Вероятность кроссовера 

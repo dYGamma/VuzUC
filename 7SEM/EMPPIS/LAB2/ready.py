@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import differential_evolution
 
 
-# Функция Эасома
+# Функция Эасома ... эволюц стратегия
 def fEaso(x):
     return -np.cos(x[0]) * np.cos(x[1]) * np.exp(-((x[0] - np.pi) ** 2 + (x[1] - np.pi) ** 2))
 

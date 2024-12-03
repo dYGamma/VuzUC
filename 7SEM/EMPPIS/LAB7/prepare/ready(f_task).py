@@ -91,7 +91,7 @@ for iter_num in range(num_iterations):
 ax.scatter(global_best_position[0], global_best_position[1], global_best_score, color='red', s=100, label='Найденный минимум (PSO)')
 ax.scatter(np.pi, np.pi, -1, color='green', s=100, label='Известный минимум')
 ax.legend(loc='upper right')
-plt.show()
+#plt.show()
 
 # Вывод результатов оптимизации
 print(f'Найденный минимум: x1 = {global_best_position[0]:.6f}, x2 = {global_best_position[1]:.6f}')
