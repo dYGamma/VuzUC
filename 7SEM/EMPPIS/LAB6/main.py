@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
 
-# --- Настройки алгоритма ---
-FILENAME = "berlin52.txt"       # Имя файла с координатами городов
+# --- Настройки алгоритма (муравьиный, для коммивояжера) ---
+FILENAME = "D:/GIT/VuzUC/7SEM/EMPPIS/LAB6/berlin52.txt"       # Имя файла с координатами городов
 N_ANTS = 100                     # Количество муравьев
 N_ITERATIONS = 200              # Количество поколений
 ALPHA = 1                       # Влияние феромона на выбор пути
@@ -61,7 +61,7 @@ def ant_colony_optimization(coords, dist_matrix, n_ants, n_iterations, alpha, be
             route_lengths.append(total_distance)
             routes.append(route)
         
-        # Обновление феромонов
+        # Обновление феромонов (уменьшается на каждом ребре, добавляется новый на основе длины(чем короче, тем дольше))
         pheromone *= (1 - evaporation_rate)
         for i, route in enumerate(routes):
             for j in range(n_cities - 1):

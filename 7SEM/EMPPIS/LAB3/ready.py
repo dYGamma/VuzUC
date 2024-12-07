@@ -5,8 +5,8 @@ import math
 import time 
 import sys 
  
-# Параметры, которые можно изменить 
-FILENAME = "LAB3/berlin52.txt"  # Имя файла с координатами городов 
+# Параметры 
+FILENAME = "D:/GIT/VuzUC/7SEM/EMPPIS/LAB3/berlin52.txt"  # Имя файла с координатами городов 
 POPULATION_SIZE = 500       # Размер популяции 
 N_GENERATIONS = 1000         # Максимальное количество поколений 
 CX_PROB = 0.9                # Вероятность кроссовера 
