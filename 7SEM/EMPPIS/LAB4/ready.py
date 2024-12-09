@@ -6,9 +6,9 @@ from scipy.optimize import minimize
 # Параметры алгоритма
 params = {
     'generations': 100,        # Количество поколений
-    'population_size': 500,    # Размер популяции
+    'population_size': 700,    # Размер популяции
     'max_depth': 8,            # Максимальная глубина дерева
-    'mutation_chance': 0.3     # Вероятность мутации
+    'mutation_chance': 0.7     # Вероятность мутации
 }
 
 # Функция для оценки (первоначальная функция)
