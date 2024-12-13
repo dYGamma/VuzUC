@@ -1,81 +1,156 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import time
+import random
 
-# Определение функции
-def objective_function(x):
-    return np.cos(x - 0.5) / np.abs(x) if x != 0 else float('inf')
+# Целевая функция
+def f(x):
+    return 3 * x**2 + 3
+
+# Декодируем хромосому в число x
+def decode_chromosome(chromosome, min_x, max_x):
+    decimal_value = int(''.join(map(str, chromosome)), 2)
+    x = min_x + (max_x - min_x) * decimal_value / (2**len(chromosome) - 1)
+    return x
+
+# Оператор репродукции (колесо рулетки)
+def select_parents(population, fitness_values):
+    total_fitness = sum(fitness_values)
+    probabilities = [f / total_fitness for f in fitness_values]
+    return random.choices(population, probabilities, k=2)
+
+# Оператор кроссовера (1-точечный)
+def crossover(parent1, parent2):
+    point = random.randint(1, len(parent1)-1)
+    child1 = parent1[:point] + parent2[point:]
+    child2 = parent2[:point] + parent1[point:]
+    return child1, child2
+
+# Оператор мутации
+def mutate(chromosome, mutation_rate):
+    return [1 - bit if random.random() < mutation_rate else bit for bit in chromosome]
 
 # Генетический алгоритм
-def genetic_algorithm(population_size, mutation_rate, crossover_rate, generations):
-    population = np.random.uniform(-10, 10, population_size)
-    best_fitness_history = []
-
+def genetic_algorithm(pop_size, chromosome_length, min_x, max_x, generations, mutation_rate):
+    population = [[random.randint(0, 1) for _ in range(chromosome_length)] for _ in range(pop_size)]
+    best_solution = None
+    best_fitness = float('-inf')
+    
     for generation in range(generations):
-        fitness = np.array([objective_function(ind) for ind in population])
-        best_fitness = np.min(fitness)
-        best_fitness_history.append(best_fitness)
+        fitness_values = [f(decode_chromosome(chromosome, min_x, max_x)) for chromosome in population]
+        new_population = []
+        
+        while len(new_population) < pop_size:
+            parent1, parent2 = select_parents(population, fitness_values)
+            child1, child2 = crossover(parent1, parent2)
+            new_population.extend([mutate(child1, mutation_rate), mutate(child2, mutation_rate)])
+        
+        population = new_population[:pop_size]
+        
+        generation_best_fitness = max(fitness_values)
+        generation_best_solution = decode_chromosome(population[fitness_values.index(generation_best_fitness)], min_x, max_x)
+        
+        if generation_best_fitness > best_fitness:
+            best_fitness = generation_best_fitness
+            best_solution = generation_best_solution
+    
+    return best_solution, best_fitness
 
-        # Кроссинговер
-        for i in range(0, population_size, 2):
-            if np.random.rand() < crossover_rate and i + 1 < population_size:
-                crossover_point = np.random.rand()
-                population[i], population[i + 1] = (
-                    population[i] * crossover_point + population[i + 1] * (1 - crossover_point),
-                    population[i] * (1 - crossover_point) + population[i + 1] * crossover_point,
-                )
-
-        # Мутация
-        for i in range(population_size):
-            if np.random.rand() < mutation_rate:
-                population[i] += np.random.normal()
-
-    best_individual = population[np.argmin([objective_function(ind) for ind in population])]
-    return best_individual, objective_function(best_individual), best_fitness_history
-
-# Параметры эксперимента
-population_size = 50
-mutation_rate = 0.05
+# Параметры ГА
+min_x = -5
+max_x = 5
+chromosome_length = 16
 generations = 100
-p_c_values = np.arange(0.1, 1.0, 0.1)
-results = []
+pop_size = 50
+mutation_rate = 0.01
 
-# Запуск эксперимента
-for p_c in p_c_values:
-    start_time = time.time()
-    best_individual, best_fitness, fitness_history = genetic_algorithm(population_size, mutation_rate, p_c, generations)
-    elapsed_time = time.time() - start_time
-    results.append((p_c, best_individual, best_fitness, elapsed_time, len(fitness_history)))
+best_solution, best_fitness = genetic_algorithm(pop_size, chromosome_length, min_x, max_x, generations, mutation_rate)
+print(f"Best solution: x = {best_solution}, f(x) = {best_fitness}")
 
-    # Вывод результатов в терминал
-    print(f'P_c = {p_c:.1f}: Лучшее x = {best_individual:.4f}, Лучший фитнес = {best_fitness:.4f}, Время = {elapsed_time:.4f} с, Поколений = {len(fitness_history)}')
 
-# Преобразование результатов для графиков
-p_c_vals, best_xs, best_fitnesses, times, generations_count = zip(*results)
+# 1. Какие “источники” ГА?
+# Источники генетического алгоритма (ГА) — это элементы, которые влияют на процессы генерации и эволюции популяции. Основными источниками являются:
 
-# Построение графиков
-plt.figure(figsize=(15, 10))
+# Генетический материал (хромосомы или индивиды), из которых состоит популяция.
+# Популяция — множество возможных решений, которое эволюционирует в процессе работы алгоритма.
+# Целевая функция — функция приспособленности, которая определяет качество решений (или хромосом).
+# Генетические операторы (селекция, кроссовер, мутация), которые используются для создания новых решений на основе существующих.
+# 2. Какие генетические операторы используются в ГА?
+# Основные генетические операторы:
 
-# График лучшего значения x
-plt.subplot(3, 1, 1)
-plt.plot(p_c_vals, best_xs, marker='o')
-plt.title('Лучшее значение x в зависимости от P_c')
-plt.xlabel('P_c')
-plt.ylabel('Лучшее x')
+# Оператор репродукции (селекция): выбирает индивидов для создания нового поколения.
+# Оператор кроссовера: комбинирует хромосомы двух родителей для создания потомков.
+# Оператор мутации: случайным образом изменяет генетический материал хромосомы для поддержания разнообразия в популяции.
+# 3. Какую роль в ГА играет оператор репродукции (ОР)?
+# Оператор репродукции (селекции) отвечает за отбор индивидов, которые будут участвовать в создании нового поколения. Он играет ключевую роль в том, чтобы позволить хорошим решениям (с высоким фитнесом) воспроизводиться, а менее успешным — иметь меньше шансов на размножение. Это помогает улучшать популяцию на каждом шаге.
 
-# График лучшего фитнеса
-plt.subplot(3, 1, 2)
-plt.plot(p_c_vals, best_fitnesses, marker='o', color='orange')
-plt.title('Лучший фитнес в зависимости от P_c')
-plt.xlabel('P_c')
-plt.ylabel('Лучший фитнес')
+# 4. Опишите реализацию ОР в виде колеса рулетки и приведите пример его работы.
+# Реализация оператора репродукции в виде колеса рулетки заключается в том, что вероятность выбора каждого индивида пропорциональна его приспособленности (фитнесу). Чем лучше индивид, тем больше его "сегмент" на колесе, и тем выше шанс его выбора.
 
-# График времени выполнения
-plt.subplot(3, 1, 3)
-plt.plot(p_c_vals, times, marker='o', color='green')
-plt.title('Время выполнения в зависимости от P_c')
-plt.xlabel('P_c')
-plt.ylabel('Время (с)')
+# Пример: Предположим, у нас есть 3 индивида с фитнесами 10, 30 и 60. Сумма фитнесов = 100. Тогда вероятности их выбора будут:
 
-plt.tight_layout()
-plt.show()
+# Индивид 1: 
+# 10
+# 100
+# =
+# 0.1
+# 
+# Индивид 2: 
+# 30
+# 100
+# =
+# 0.3
+# 
+# Индивид 3: 
+# 60
+# 100
+# =
+# 0.6
+# 
+# На колесе рулетки они будут распределены в соответствии с этими вероятностями.
+
+# 5. Придумайте другую реализацию ОР.
+# Другой способ реализации оператора репродукции — турнирная селекция. В этой реализации случайным образом выбираются два или больше индивидов, и из них выбирается лучший. Это позволяет избегать излишней доминации очень сильных индивидов и способствует более стабильному эволюционному процессу.
+
+# 6. Опишите 1-точечный оператор кроссинговера (ОК) и приведите пример его работы.
+# 1-точечный кроссовер — это процесс обмена генетической информацией между двумя родителями на одной случайной точке. Хромосомы разделяются на две части, и одна часть от одного родителя соединяется с другой частью от второго родителя.
+
+# Пример: Пусть у нас есть два родителя:
+
+# Родитель 1: 110010
+# Родитель 2: 001110
+# Выбираем точку кроссовера на позиции 3 (первый, второй и третий биты):
+
+# Потомок 1: 110110
+# Потомок 2: 001010
+# 7. Придумайте другую реализацию ОК.
+# Другой тип кроссовера — двухточечный кроссовер, где для каждого родителя выбираются две точки, и между ними происходит обмен частями хромосом.
+
+# 8. Какую роль играет оператор мутации (ОМ)?
+# Оператор мутации влияет на генетическое разнообразие популяции. Он вносит случайные изменения в хромосомы, что помогает избежать локальных минимумов и способствует более глобальному поиску оптимального решения. Мутация важна для поддержания разнообразия и предотвращения стагнации.
+
+# 9. Опишите ОМ и приведите пример его работы.
+# Оператор мутации случайным образом изменяет один или несколько битов хромосомы. Обычно это делается с низкой вероятностью, чтобы не нарушить хорошее решение.
+
+# Пример: Для хромосомы 110010 и вероятности мутации 0.1, может быть случайным образом изменен один бит:
+
+# Мутированная хромосома: 111010
+# 10. Придумайте другую реализацию ОМ.
+# Другой способ реализации мутации — обратная мутация, при которой не один бит меняется, а два случайных бита инвертируются, что приводит к большей случайности.
+
+
+# 12. Какие основные параметры ГА?
+# Основные параметры генетического алгоритма:
+
+# Размер популяции (pop_size)
+# Длина хромосомы (chromosome_length)
+# Вероятность мутации (mutation_rate)
+# Вероятность кроссовера (crossover_rate)
+# Число поколений (generations)
+# Целевая функция и ее параметры
+# 13. Исследуйте зависимость работы (скорость сходимости) ПГА от мощности популяции 
+# Для этого можно провести эксперименты, изменяя значение популяции и сравнивая время сходимости. Обычно увеличение популяции улучшает качество решения, но также увеличивает время работы.
+
+# 14. Исследуйте зависимость работы ПГА от значения вероятности ОК 
+# Изменение вероятности кроссовера влияет на баланс между поиском нового пространства решений и сохранением хороших решений. Высокая вероятность может привести к более быстрой сходимости, но также и к застреванию в локальных оптимумах.
+
+# 15. Исследуйте зависимость работы ПГА от значения вероятности мутации 
+# Низкая вероятность мутации замедляет поиск новых решений, а высокая вероятность может сильно искажать хорошие решения.
