@@ -1,130 +1,120 @@
 import numpy as np
-import matplotlib
-matplotlib.use('TkAgg')
+import random
 import matplotlib.pyplot as plt
+import time
 
-# Функция для оптимизации
-def f(x):
-    with np.errstate(divide='ignore', invalid='ignore'):
-        result = np.cos(x - 0.5) / np.abs(x)
-        result[np.isnan(result)] = 0  # Обрабатываем NaN, если x=0
-    return result
+# Целевая функция для оптимизации
+def objective_function(x):
+    if x == 0:  # Исключаем деление на 0
+        return np.inf  # Возвращаем бесконечность для значения x = 0
+    return np.cos(x - 0.5) / np.abs(x)  # Основная функция cos(x-0.5)/|x|
 
-# Настройки
-population_size = 100
-generations = 50
-mutation_rate = 0.2
-mutation_chance = 0.9
-x_bounds = [-10, 10]  # Интервал x ∈ [-10, 0) ∪ (0, 10]
+# Функция декодирования хромосомы в вещественное значение
+def decode_chromosome(chromosome, min_x, max_x):
+    decimal_value = int(''.join(map(str, chromosome)), 2)  # Преобразование двоичной хромосомы в целое число
+    x = min_x + (max_x - min_x) * decimal_value / (2 ** len(chromosome) - 1)  # Преобразование в диапазон [min_x, max_x]
+    return x
 
-# Функция для выполнения ПГА с заданным значением вероятности кроссинговера
-def run_ga(crossover_prob):
-    population = np.concatenate([np.random.uniform(x_bounds[0], -0.01, population_size // 2),
-                                 np.random.uniform(0.01, x_bounds[1], population_size // 2)])
+# Генерация начальной популяции
+def generate_population(pop_size, chromosome_length):
+    return [np.random.randint(0, 2, chromosome_length).tolist() for _ in range(pop_size)]  # Случайная генерация популяции хромосом
 
-    fitness_history = []
-    population_history = []
+# Оценка популяции на основе целевой функции
+def evaluate_population(population, min_x, max_x):
+    return [objective_function(decode_chromosome(chromosome, min_x, max_x)) for chromosome in population]  # Преобразование хромосом в x и оценка
+
+# Выбор родителей для скрещивания с использованием метода рулетки
+def select_parents(population, fitness_values):
+    min_fitness = min(fitness_values)  # Находим минимальное значение фитнеса
+    shifted_fitness_values = [f - min_fitness + 1e-6 for f in fitness_values]  # Смещаем значения фитнеса, чтобы они были положительными
+    total_fitness = sum(shifted_fitness_values)  # Сумма всех фитнесов
+    probabilities = [f / total_fitness for f in shifted_fitness_values]  # Вероятности выбора родителей пропорциональны значению фитнеса
+
+    # Выбираем двух разных родителей с использованием вероятностного подхода (рулетка)
+    parents_indices = np.random.choice(len(population), size=2, p=probabilities, replace=False)
+    return population[parents_indices[0]], population[parents_indices[1]]
+
+# Операция скрещивания (кроссинговера)
+def crossover(parent1, parent2):
+    crossover_point = np.random.randint(1, len(parent1) - 1)  # Выбор случайной точки для разбиения хромосом
+    child1 = parent1[:crossover_point] + parent2[crossover_point:]  # Ребенок 1: часть от первого родителя и часть от второго
+    child2 = parent2[:crossover_point] + parent1[crossover_point:]  # Ребенок 2: часть от второго родителя и часть от первого
+    return child1, child2
+
+# Операция мутации с заданной вероятностью
+def mutate(chromosome, mutation_rate):
+    return [1 - bit if random.random() < mutation_rate else bit for bit in chromosome]  # Инвертируем бит с вероятностью, равной mutation_rate
+
+# Основной цикл генетического алгоритма
+def run_genetic_algorithm(pop_size, chromosome_length, min_x, max_x, generations, mutation_rate, crossover_rate):
+    population = generate_population(pop_size, chromosome_length)  # Генерация начальной популяции
+    best_solutions = []  # Список для сохранения лучших решений в каждой итерации
 
     for generation in range(generations):
-        fitness = f(population)
-        fitness_history.append(np.mean(fitness))  # Сохраняем среднюю приспособленность
-        population_history.append(population)
+        fitness_values = evaluate_population(population, min_x, max_x)  # Оценка текущей популяции
+        new_population = []  # Новая популяция для следующего поколения
 
-        # Селекция лучших особей
-        selected_indices = np.argsort(fitness)[:population_size // 2]
-        selected_population = population[selected_indices]
-
-        # Кроссинговер и создание потомков
-        offspring = []
-        for i in range(len(selected_population) // 2):
-            parent1 = selected_population[2 * i]
-            parent2 = selected_population[2 * i + 1]
-            if np.random.rand() < crossover_prob:  # Проверка вероятности кроссинговера
-                crossover_point = np.random.rand()
-                child = crossover_point * parent1 + (1 - crossover_point) * parent2
+        # Создание нового поколения
+        while len(new_population) < pop_size:
+            parent1, parent2 = select_parents(population, fitness_values)  # Выбор родителей
+            if random.random() < crossover_rate:
+                child1, child2 = crossover(parent1, parent2)  # Выполняем кроссинговер
             else:
-                child = parent1  # Потомок идентичен родителю, если кроссинговер не произошёл
-            offspring.append(child)
+                child1, child2 = parent1, parent2  # Если кроссинговера нет, дети — это копии родителей
+            new_population.extend([mutate(child1, mutation_rate), mutate(child2, mutation_rate)])  # Мутация потомков и добавление их в новую популяцию
 
-        offspring = np.array(offspring)
-        
-        # Мутация
-        if np.random.uniform(0, 1) <= mutation_chance:
-            mutation = np.random.uniform(-mutation_rate, mutation_rate, offspring.shape)
-            offspring += mutation
+        population = new_population[:pop_size]  # Обновление популяции, ограниченной количеством особей
 
-        population = np.concatenate((selected_population, offspring))
+        best_fitness = min(fitness_values)  # Лучший фитнес текущего поколения
+        best_index = fitness_values.index(best_fitness)  # Индекс лучшей особи
+        best_x = decode_chromosome(population[best_index], min_x, max_x)  # Декодируем хромосому лучшей особи в значение x
+        best_solutions.append((best_x, best_fitness))  # Сохраняем лучшее решение
 
-    return population_history, fitness_history
+        print(f"Generation {generation + 1}: Best x = {best_x:.4f}, Best fitness = {best_fitness:.4f}")  # Выводим лучшего представителя поколения
 
-# Функция для визуализации
-def plot_generation(generation, population_history, fitness_history, title):
-    plt.figure(figsize=(10, 6))
-    plt.plot(population_history[generation], f(population_history[generation]), 'o', label=f'Поколение {generation + 1}', alpha=0.7)
-    
-    x_values = np.linspace(x_bounds[0], x_bounds[1], 400)
-    x_values = np.concatenate([x_values[x_values < 0], x_values[x_values > 0]])  # Исключаем x=0
-    plt.plot(x_values, f(x_values), label='Исходная функция', color='red', linewidth=2)
-    
-    plt.title(title)
-    plt.xlabel('Индивид')
-    plt.ylabel('Приспособленность')
-    plt.ylim(-10, 10)
-    plt.legend(loc='upper right', fontsize='small')
-    plt.grid()
-    plt.show()
+    return best_solutions  # Возвращаем список лучших решений за все поколения
 
-# Функция для анализа результатов
-def analyze_results(fitness_histories, crossover_probs):
-    print("\nАнализ исследования на основе полученных данных:\n")
-    
-    for idx, pc in enumerate(crossover_probs):
-        print(f"1. **Pc = {pc}**: \n")
-        print(f"Средняя приспособленность в последнем поколении: {fitness_histories[idx][-1]:.4f}")
-        print(f"Скорость сходимости: {np.max(fitness_histories[idx]) - np.min(fitness_histories[idx]):.4f}")
-        if fitness_histories[idx][-1] > 0:
-            print(f"Алгоритм показывает уверенную сходимость при данном значении кроссинговера.\n")
-        else:
-            print(f"Схождение к хорошему решению происходит медленно, вероятно, из-за недостаточной изменчивости в популяции.\n")
+# Основные параметры генетического алгоритма
+min_x = -10  # Минимальное значение x
+max_x = 10  # Максимальное значение x
+chromosome_length = 16  # Длина хромосомы (количество бит)
+generations = 100  # Количество поколений (итераций)
 
-    print("\n**Итоги и выводы**:\n")
-    max_fitness_last_gen = [fh[-1] for fh in fitness_histories]
-    best_pc_idx = np.argmax(max_fitness_last_gen)
-    
-    print(f"Оптимальное значение вероятности кроссинговера по результатам эксперимента: Pc = {crossover_probs[best_pc_idx]}")
-    print(f"Лучший результат по среднему значению приспособленности был достигнут при Pc = {crossover_probs[best_pc_idx]} с приспособленностью {max_fitness_last_gen[best_pc_idx]:.4f}.")
-    print("Алгоритм лучше всего работает при средних значениях вероятности кроссинговера, где достигается лучший баланс между исследованием и сохранением хороших решений.")
+# Исследование зависимости различных параметров
+results = []
 
-# Исследование для разных значений Pc
-crossover_probs = [0.1, 0.5, 0.9]
-fitness_histories = []
+for pop_size in [50, 100, 150]:  # Количество особей в популяции
+    for mutation_rate in [0.01, 0.05]:  # Вероятность мутации
+        for crossover_rate in [0.6, 0.9]:  # Вероятность кроссинговера
+            start_time = time.time()  # Начало измерения времени
+            best_solutions = run_genetic_algorithm(pop_size, chromosome_length, min_x, max_x, generations,
+                                                   mutation_rate, crossover_rate)  # Запуск генетического алгоритма
+            end_time = time.time()  # Конец измерения времени
+            time_taken = end_time - start_time  # Затраченное время
 
-for pc in crossover_probs:
-    population_history, fitness_history = run_ga(crossover_prob=pc)
-    fitness_histories.append(fitness_history)
-    
-    # Визуализируем последнее поколение для каждого значения Pc
-    plot_generation(generations - 1, population_history, fitness_history, f'Поколение {generations}, Pc={pc}')
+            best_x, best_fitness = best_solutions[-1]  # Получение последнего (наилучшего) решения
+            results.append((pop_size, mutation_rate, crossover_rate, (best_x, best_fitness), time_taken))  # Сохранение результатов
 
-# Визуализируем сходимость для всех поколений для всех Pc
-for pc in crossover_probs:
-    population_history, fitness_history = run_ga(crossover_prob=pc)
+# Вывод результатов экспериментов
+for result in results:
+    pop_size, mutation_rate, crossover_rate, best_solution, time_taken = result
+    best_x, best_fitness = best_solution
+    print(f"Population size: {pop_size}, Mutation rate: {mutation_rate}, Crossover rate: {crossover_rate}, "
+          f"Time: {time_taken:.2f}s, Best x: {best_x:.4f}, Best fitness: {best_fitness:.4f}")  # Вывод параметров и лучшего решения
 
-    plt.figure(figsize=(12, 8))
-    for i in range(generations):
-        plt.plot(population_history[i], f(population_history[i]), 'o', label=f'Поколение {i + 1}', alpha=0.5)
+# График функции и найденные экстремумы
+x_values = np.linspace(-10, 10, 400)  # Диапазон значений x
+y_values = [objective_function(x) for x in x_values if x != 0]  # Вычисление значений функции для графика
 
-    x_values = np.linspace(x_bounds[0], x_bounds[1], 400)
-    x_values = np.concatenate([x_values[x_values < 0], x_values[x_values > 0]])  # Исключаем x=0
-    plt.plot(x_values, f(x_values), label='Исходная функция', color='red', linewidth=2)
+plt.plot(x_values, y_values, label='f(x) = cos(x-0.5)/|x|')  # Построение графика функции
+for _, _, _, best_solution, _ in results:
+    best_x, _ = best_solution
+    plt.scatter(best_x, objective_function(best_x), color='red')  # Нанесение на график найденных экстремумов
 
-    plt.title(f'Приспособленность индивидов на протяжении {generations} поколений для Pc={pc}')
-    plt.xlabel('Индивид')
-    plt.ylabel('Приспособленность')
-    plt.ylim(-10, 10)
-    plt.legend(loc='upper right', fontsize='small')
-    plt.grid()
-    plt.show()
-
-# Вывод анализа на основе данных
-analyze_results(fitness_histories, crossover_probs)
+plt.xlabel('x')  # Название оси X
+plt.ylabel('f(x)')  # Название оси Y
+plt.title('График функции и найденные экстремумы')  # Заголовок графика
+plt.axhline(0, color='black', linewidth=0.5, linestyle='--')  # Горизонтальная линия оси
+plt.axvline(0, color='black', linewidth=0.5, linestyle='--')  # Вертикальная линия оси
+plt.legend()  # Легенда графика
+plt.show()  # Показать график

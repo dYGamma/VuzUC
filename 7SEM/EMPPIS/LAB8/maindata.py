@@ -10,9 +10,9 @@ train_data = data.iloc[:40]
 test_data = data.iloc[40:]
 
 # Параметры алгоритма
-population_size = 700
+population_size = 300
 generations = 100
-mutation_rate = 0.9
+mutation_rate = 0.5
 
 # Параметры COCOMO для различных типов ПО
 cocomo_params = {

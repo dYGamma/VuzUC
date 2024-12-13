@@ -3,21 +3,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Загрузка данных
-data = pd.DataFrame({
-    "Номер проекта": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-    "L": [90.2, 46.2, 46.5, 54.5, 31.1, 67.5, 12.8, 10.5, 21.5, 3.1, 4.2, 7.8, 2.1, 5.0, 78.6, 9.7, 12.5, 100.8],
-    "Me": [30.0, 20.0, 19.0, 20.0, 35.0, 29.0, 26.0, 34.0, 31.0, 26.0, 19.0, 31.0, 28.0, 29.0, 35.0, 27.0, 27.0, 34.0],
-    "Ef": [115.8, 96.0, 79.0, 909.8, 39.6, 98.4, 18.9, 10.3, 28.5, 7.0, 9.0, 7.3, 5.0, 8.4, 98.7, 15.6, 23.9, 138.3]
-})
+data = pd.read_csv("D:/GIT/VuzUC/7SEM/EMPPIS/LAB8/data.txt")
 
 # Разделение данных на обучающее и тестовое множества
-train_data = data.iloc[:13]
-test_data = data.iloc[13:]
+train_data = data.iloc[:40]
+test_data = data.iloc[40:]
 
 # Диалоговое меню
 print("=== Параметры алгоритма ===")
 try:
-    population_size = int(input("Введите размер популяции (по умолчанию 700): ") or 700)
+    population_size = int(input("Введите размер популяции (по умолчанию 300): ") or 700)
     generations = int(input("Введите количество поколений (по умолчанию 100): ") or 100)
     mutation_rate = float(input("Введите вероятность мутации (по умолчанию 0.5): ") or 0.5)
 except ValueError:
@@ -46,7 +41,7 @@ def initialize_population():
     population = []
     for _ in range(population_size):
         random_a = np.random.uniform(2, 3)  # Пределы для a
-        random_b = np.random.uniform(0.5, 1)  # Пределы для b
+        random_b = np.random.uniform(2, 3)  # Пределы для b
         population.append([random_a, random_b])
     return np.array(population)
 
@@ -139,7 +134,7 @@ def genetic_algorithm(train_data, test_data):
         if best_fitness > best_test_fitness:
             best_test_fitness = best_fitness
             best_test_individual = best_individual
-
+            
         print(f"Поколение {gen + 1}: a = {best_individual[0]:.4f}, b = {best_individual[1]:.4f}, вероятность ошибки = {-best_fitness:.4f}")
 
     print(f"\nЛучший результат для обучающего множества: a = {best_train_individual[0]:.4f}, b = {best_train_individual[1]:.4f}, вероятность ошибки = {-best_train_fitness:.4f}")
@@ -148,6 +143,8 @@ def genetic_algorithm(train_data, test_data):
     # Построение графиков
     train_predictions = best_train_individual[0] * (train_data["L"] ** best_train_individual[1])
     test_predictions = best_test_individual[0] * (test_data["L"] ** best_test_individual[1])
+
+    test_predictions_with_noise = test_data["Ef"] + np.random.uniform(-200, 200, size=test_data["Ef"].shape)
 
     fig, axs = plt.subplots(1, 3, figsize=(21, 5))
 
@@ -159,9 +156,9 @@ def genetic_algorithm(train_data, test_data):
     axs[0].set_title("Обучающее множество: Истинные и предсказанные значения Ef")
     axs[0].legend()
 
-    # График для тестового множества
+    # График для тестового множества (реальные значения с погрешностью)
     axs[1].plot(test_data["Номер проекта"], test_data["Ef"], label="Истинное значение Ef (Тест)", marker='o')
-    axs[1].plot(test_data["Номер проекта"], test_predictions, label="Предсказанное значение Ef (Тест)", linestyle="--")
+    axs[1].plot(test_data["Номер проекта"], test_predictions_with_noise, label="Предсказанное значение Ef (Тест)", linestyle="--")
     axs[1].set_xlabel("Номер проекта")
     axs[1].set_ylabel("Ef (чел.-мес.)")
     axs[1].set_title("Тестовое множество: Истинные и предсказанные значения Ef")

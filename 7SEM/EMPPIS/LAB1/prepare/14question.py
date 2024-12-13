@@ -1,121 +1,81 @@
-import numpy as np 
-import matplotlib
-matplotlib.use('TkAgg')
+import numpy as np
 import matplotlib.pyplot as plt
+import time
 
-# Функция для оптимизации
-def f(x):
-    with np.errstate(divide='ignore', invalid='ignore'):
-        result = np.cos(x - 0.5) / np.abs(x)
-        result[np.isnan(result)] = 0  # Обрабатываем NaN, если x=0
-    return result
+# Определение функции
+def objective_function(x):
+    return np.cos(x - 0.5) / np.abs(x) if x != 0 else float('inf')
 
-# Настройки
-population_size = 100
-generations = 50
-mutation_rate = 0.2
-mutation_chance = 0.9
-x_bounds = [-10, 10]  # Интервал x ∈ [-10, 0) ∪ (0, 10]
-
-# Значения вероятности кроссинговера Pc для эксперимента
-crossover_probabilities = [0.2, 0.5, 0.8, 1.0]
-
-# Исследование разных вероятностей Pc
-results = {}
-
-for Pc in crossover_probabilities:
-    # Инициализация популяции
-    population = np.concatenate([np.random.uniform(x_bounds[0], -0.01, population_size // 2),
-                                 np.random.uniform(0.01, x_bounds[1], population_size // 2)])
-
-    fitness_history = []
-    population_history = []
-    avg_fitness_history = []  # Средняя приспособленность
-    min_fitness_history = []  # Минимальная приспособленность
+# Генетический алгоритм
+def genetic_algorithm(population_size, mutation_rate, crossover_rate, generations):
+    population = np.random.uniform(-10, 10, population_size)
+    best_fitness_history = []
 
     for generation in range(generations):
-        fitness = f(population)
-        fitness_history.append(fitness)
-        population_history.append(population)
+        fitness = np.array([objective_function(ind) for ind in population])
+        best_fitness = np.min(fitness)
+        best_fitness_history.append(best_fitness)
 
-        # Сохраняем среднее и минимальное значение приспособленности
-        avg_fitness_history.append(np.mean(fitness))
-        min_fitness_history.append(np.min(fitness))
-
-        # Селекция особей с лучшими значениями (поиск минимума)
-        selected_indices = np.argsort(fitness)[:population_size // 2]
-        selected_population = population[selected_indices]
-
-        # Кроссинговер и создание потомков
-        offspring = []
-        for i in range(len(selected_population) // 2):
-            parent1 = selected_population[2 * i]
-            parent2 = selected_population[2 * i + 1]
-
-            if np.random.rand() < Pc:  # Применение вероятности кроссинговера
+        # Кроссинговер
+        for i in range(0, population_size, 2):
+            if np.random.rand() < crossover_rate and i + 1 < population_size:
                 crossover_point = np.random.rand()
-                child = crossover_point * parent1 + (1 - crossover_point) * parent2
-            else:
-                child = parent1  # Если кроссинговера не произошло, ребенок - копия родителя
+                population[i], population[i + 1] = (
+                    population[i] * crossover_point + population[i + 1] * (1 - crossover_point),
+                    population[i] * (1 - crossover_point) + population[i + 1] * crossover_point,
+                )
 
-            offspring.append(child)
-
-        offspring = np.array(offspring)
-        
         # Мутация
-        if np.random.uniform(0, 1) <= mutation_chance:
-            mutation = np.random.uniform(-mutation_rate, mutation_rate, offspring.shape)
-            offspring += mutation
+        for i in range(population_size):
+            if np.random.rand() < mutation_rate:
+                population[i] += np.random.normal()
 
-        population = np.concatenate((selected_population, offspring))
+    best_individual = population[np.argmin([objective_function(ind) for ind in population])]
+    return best_individual, objective_function(best_individual), best_fitness_history
 
-    # Сохраняем историю для текущего значения Pc
-    results[Pc] = {
-        'fitness_history': fitness_history,
-        'population_history': population_history,
-        'avg_fitness_history': avg_fitness_history,
-        'min_fitness_history': min_fitness_history
-    }
+# Параметры эксперимента
+population_size = 50
+mutation_rate = 0.05
+generations = 100
+p_c_values = np.arange(0.1, 1.0, 0.1)
+results = []
 
-# Анализ результатов
-plt.figure(figsize=(12, 6))
+# Запуск эксперимента
+for p_c in p_c_values:
+    start_time = time.time()
+    best_individual, best_fitness, fitness_history = genetic_algorithm(population_size, mutation_rate, p_c, generations)
+    elapsed_time = time.time() - start_time
+    results.append((p_c, best_individual, best_fitness, elapsed_time, len(fitness_history)))
 
-# График средней приспособленности
-plt.subplot(1, 2, 1)
-for Pc in crossover_probabilities:
-    avg_fitness = results[Pc]['avg_fitness_history']
-    plt.plot(range(1, generations + 1), avg_fitness, label=f'Pc = {Pc}', linewidth=2)
-plt.title('Средняя приспособленность по поколениям')
-plt.xlabel('Поколение')
-plt.ylabel('Средняя приспособленность')
-plt.legend()
-plt.grid(True)
+    # Вывод результатов в терминал
+    print(f'P_c = {p_c:.1f}: Лучшее x = {best_individual:.4f}, Лучший фитнес = {best_fitness:.4f}, Время = {elapsed_time:.4f} с, Поколений = {len(fitness_history)}')
 
-# График минимальной приспособленности
-plt.subplot(1, 2, 2)
-for Pc in crossover_probabilities:
-    min_fitness = results[Pc]['min_fitness_history']
-    plt.plot(range(1, generations + 1), min_fitness, label=f'Pc = {Pc}', linewidth=2)
-plt.title('Минимальная приспособленность по поколениям')
-plt.xlabel('Поколение')
-plt.ylabel('Минимальная приспособленность')
-plt.legend()
-plt.grid(True)
+# Преобразование результатов для графиков
+p_c_vals, best_xs, best_fitnesses, times, generations_count = zip(*results)
+
+# Построение графиков
+plt.figure(figsize=(15, 10))
+
+# График лучшего значения x
+plt.subplot(3, 1, 1)
+plt.plot(p_c_vals, best_xs, marker='o')
+plt.title('Лучшее значение x в зависимости от P_c')
+plt.xlabel('P_c')
+plt.ylabel('Лучшее x')
+
+# График лучшего фитнеса
+plt.subplot(3, 1, 2)
+plt.plot(p_c_vals, best_fitnesses, marker='o', color='orange')
+plt.title('Лучший фитнес в зависимости от P_c')
+plt.xlabel('P_c')
+plt.ylabel('Лучший фитнес')
+
+# График времени выполнения
+plt.subplot(3, 1, 3)
+plt.plot(p_c_vals, times, marker='o', color='green')
+plt.title('Время выполнения в зависимости от P_c')
+plt.xlabel('P_c')
+plt.ylabel('Время (с)')
 
 plt.tight_layout()
 plt.show()
-
-# Вывод результатов и заключение
-for Pc in crossover_probabilities:
-    avg_fitness = results[Pc]['avg_fitness_history']
-    min_fitness = results[Pc]['min_fitness_history']
-    print(f"Pc = {Pc}:")
-    print(f"  Средняя приспособленность на последнем поколении: {avg_fitness[-1]:.4f}")
-    print(f"  Минимальная приспособленность на последнем поколении: {min_fitness[-1]:.4f}")
-    print("")
-
-# Заключение на основе полученных результатов
-print("Заключение:")
-best_Pc = max(crossover_probabilities, key=lambda pc: results[pc]['min_fitness_history'][-1])
-print(f"Лучшие результаты минимальной приспособленности на последнем поколении достигнуты при Pc = {best_Pc}.")
-print(f"Повышение вероятности кроссинговера, как правило, улучшает производительность алгоритма, но на высоких значениях Pc эффект становится менее выраженным.")

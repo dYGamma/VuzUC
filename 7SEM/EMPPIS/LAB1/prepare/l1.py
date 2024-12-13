@@ -1,102 +1,81 @@
 import numpy as np
-import matplotlib
-matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+import time
 
-# Функция для оптимизации
-def f(x):
-    with np.errstate(divide='ignore', invalid='ignore'):
-        result = np.cos(x - 0.5) / np.abs(x)
-        result[np.isnan(result)] = 0  # Обрабатываем NaN, если x=0
-    return result
+# Определение функции
+def objective_function(x):
+    return np.cos(x - 0.5) / np.abs(x) if x != 0 else float('inf')
 
-# Настройки
-population_size = 100
-generations = 50
-mutation_rate = 0.2
-mutation_chance = 0.9
-x_bounds = [-10, 10]  # Интервал x ∈ [-10, 0) ∪ (0, 10]
+# Генетический алгоритм
+def genetic_algorithm(population_size, mutation_rate, crossover_rate, generations):
+    population = np.random.uniform(-10, 10, population_size)
+    best_fitness_history = []
 
-# Инициализация популяции
-population = np.concatenate([np.random.uniform(x_bounds[0], -0.01, population_size // 2),
-                             np.random.uniform(0.01, x_bounds[1], population_size // 2)])
+    for generation in range(generations):
+        fitness = np.array([objective_function(ind) for ind in population])
+        best_fitness = np.min(fitness)
+        best_fitness_history.append(best_fitness)
 
-fitness_history = []
-population_history = []
+        # Кроссинговер
+        for i in range(0, population_size, 2):
+            if np.random.rand() < crossover_rate and i + 1 < population_size:
+                crossover_point = np.random.rand()
+                population[i], population[i + 1] = (
+                    population[i] * crossover_point + population[i + 1] * (1 - crossover_point),
+                    population[i] * (1 - crossover_point) + population[i + 1] * crossover_point,
+                )
 
-for generation in range(generations):
-    fitness = f(population)
-    fitness_history.append(fitness)
-    population_history.append(population)
+        # Мутация
+        for i in range(population_size):
+            if np.random.rand() < mutation_rate:
+                population[i] += np.random.normal()
 
-    # Селекция особей с лучшими значениями (поиск минимума)
-    selected_indices = np.argsort(fitness)[:population_size // 2]
-    selected_population = population[selected_indices]
+    best_individual = population[np.argmin([objective_function(ind) for ind in population])]
+    return best_individual, objective_function(best_individual), best_fitness_history
 
-    # Кроссинговер и создание потомков
-    offspring = []
-    for i in range(len(selected_population) // 2):
-        parent1 = selected_population[2 * i]
-        parent2 = selected_population[2 * i + 1]
-        crossover_point = np.random.rand()
-        child = crossover_point * parent1 + (1 - crossover_point) * parent2
-        offspring.append(child)
+# Параметры эксперимента
+population_size = 50
+mutation_rate = 0.05
+generations = 100
+p_c_values = np.arange(0.1, 1.0, 0.1)
+results = []
 
-    offspring = np.array(offspring)
-    
-    # Мутация
-    if np.random.uniform(0, 1) <= mutation_chance:
-        mutation = np.random.uniform(-mutation_rate, mutation_rate, offspring.shape)
-        offspring += mutation
+# Запуск эксперимента
+for p_c in p_c_values:
+    start_time = time.time()
+    best_individual, best_fitness, fitness_history = genetic_algorithm(population_size, mutation_rate, p_c, generations)
+    elapsed_time = time.time() - start_time
+    results.append((p_c, best_individual, best_fitness, elapsed_time, len(fitness_history)))
 
-    population = np.concatenate((selected_population, offspring))
+    # Вывод результатов в терминал
+    print(f'P_c = {p_c:.1f}: Лучшее x = {best_individual:.4f}, Лучший фитнес = {best_fitness:.4f}, Время = {elapsed_time:.4f} с, Поколений = {len(fitness_history)}')
 
-# Функция для визуализации
-def plot_generation(generation):
-    print(fitness_history[generation])
-    print(population_history[generation])
-    plt.figure(figsize=(10, 6))
-    plt.plot(population_history[generation], fitness_history[generation], 'o', label=f'Поколение {generation + 1}', alpha=0.7)
-    
-    x_values = np.linspace(x_bounds[0], x_bounds[1], 400)
-    x_values = np.concatenate([x_values[x_values < 0], x_values[x_values > 0]])  # Исключаем x=0
-    plt.plot(x_values, f(x_values), label='Исходная функция', color='red', linewidth=2)
-    
-    plt.title(f'Приспособленность индивидов в поколении {generation + 1}')
-    plt.xlabel('Индивид')
-    plt.ylabel('Приспособленность')
-    plt.ylim(-10, 10)
-    plt.legend(loc='upper right', fontsize='small')
-    plt.grid()
-    plt.show()
+# Преобразование результатов для графиков
+p_c_vals, best_xs, best_fitnesses, times, generations_count = zip(*results)
 
-while True:
-    user_input = input("Введите номер поколения (1-50) или 'all' для отображения всех поколений: ")
-    
-    if user_input.lower() == 'q':
-        break
-    if user_input.lower() == 'all':
-        plt.figure(figsize=(12, 8))
-        for i in range(generations):
-            plt.plot(population_history[i], fitness_history[i], 'o', label=f'Поколение {i + 1}', alpha=0.5)
+# Построение графиков
+plt.figure(figsize=(15, 10))
 
-        x_values = np.linspace(x_bounds[0], x_bounds[1], 400)
-        x_values = np.concatenate([x_values[x_values < 0], x_values[x_values > 0]])  # Исключаем x=0
-        plt.plot(x_values, f(x_values), label='Исходная функция', color='red', linewidth=2)
+# График лучшего значения x
+plt.subplot(3, 1, 1)
+plt.plot(p_c_vals, best_xs, marker='o')
+plt.title('Лучшее значение x в зависимости от P_c')
+plt.xlabel('P_c')
+plt.ylabel('Лучшее x')
 
-        plt.title(f'Приспособленность индивидов на протяжении {generations} поколений')
-        plt.xlabel('Индивид')
-        plt.ylabel('Приспособленность')
-        plt.ylim(-10, 10)
-        plt.legend(loc='upper right', fontsize='small')
-        plt.grid()
-        plt.show()
-    else:
-        try:
-            generation_number = int(user_input) - 1
-            if 0 <= generation_number < generations:
-                plot_generation(generation_number)
-            else:
-                print(f"Пожалуйста, введите номер поколения от 1 до {generations}.")
-        except ValueError:
-            print("Некорректный ввод. Пожалуйста, введите номер поколения или 'all'.")
+# График лучшего фитнеса
+plt.subplot(3, 1, 2)
+plt.plot(p_c_vals, best_fitnesses, marker='o', color='orange')
+plt.title('Лучший фитнес в зависимости от P_c')
+plt.xlabel('P_c')
+plt.ylabel('Лучший фитнес')
+
+# График времени выполнения
+plt.subplot(3, 1, 3)
+plt.plot(p_c_vals, times, marker='o', color='green')
+plt.title('Время выполнения в зависимости от P_c')
+plt.xlabel('P_c')
+plt.ylabel('Время (с)')
+
+plt.tight_layout()
+plt.show()
