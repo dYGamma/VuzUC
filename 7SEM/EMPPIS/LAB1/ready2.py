@@ -85,7 +85,7 @@ def run_genetic_algorithm(pop_size, chromosome_length, min_x, max_x, generations
 
     # Выводим значение функции для лучшего решения
     best_fitness_value = objective_function(global_best_solution)
-    print(f"Function value at the best x = {global_best_solution:.4f}")
+    print(f"Function value at the best x = {global_best_solution:.4f}: {best_fitness_value:.4f}")
 
     return best_solutions  # Возвращаем лучшие решения для последующего анализа
 

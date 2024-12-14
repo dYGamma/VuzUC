@@ -70,7 +70,7 @@ if __name__ == '__main__':
     x_max = 10
     population = generate_population(population_size, x_min, x_max)  # Начальная популяция
     generation = 0  # Номер поколения
-    max_generations = 50  # Лимит по числу поколений
+    max_generations = 100  # Лимит по числу поколений
     best_fitness = float('-inf')  # Текущая лучшая особь
     best_values = []  # Массив лучших особей
     plot_steps = [0, 10, 25, 40]  # Номера популяций для которых будут строиться графики
