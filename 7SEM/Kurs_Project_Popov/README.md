@@ -7,4 +7,4 @@
 ### Пример выполненной работы на отлично:
 **Калькулятор**
 
-- `https://github.com/xincas/stm32-touchscreen-calculator`
+- **[Ссылка](https://github.com/xincas/stm32-touchscreen-calculator)**
