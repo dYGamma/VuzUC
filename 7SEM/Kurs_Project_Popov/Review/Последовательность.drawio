@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="25.0.3">
   <diagram name="Страница — 1" id="wTVbVLARGpGQdvWJl2xj">
-    <mxGraphModel dx="-432" dy="1169" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="-972" dy="861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -220,6 +220,74 @@
         </mxCell>
         <mxCell id="dgGVusEM3EoO9SasVwt4-59" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;loop (1, n)&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="4380" y="385" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-60" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4962" y="360" width="400" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-61" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-62" target="dgGVusEM3EoO9SasVwt4-64">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-62" value="НАЧАЛО" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5012" y="385" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-63" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-64" target="dgGVusEM3EoO9SasVwt4-66">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-64" value="Инициализация I2C для AMG8833" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5012" y="485" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-66" target="dgGVusEM3EoO9SasVwt4-84">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-66" value="Инициализация AMG8833" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5012" y="585" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-68" target="dgGVusEM3EoO9SasVwt4-70">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-68" value="Чтение данных (8x8 температур)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5012" y="840" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-69" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-70" target="dgGVusEM3EoO9SasVwt4-72">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-70" value="Преобразование в цветовую палитру" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5012" y="940" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-71" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-72">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="5252" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-72" value="Возврат массива температур (8x8)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5192" y="940" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-86" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-84" target="dgGVusEM3EoO9SasVwt4-66">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="4972" y="755" />
+              <mxPoint x="4972" y="615" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-87" value="Нет" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dgGVusEM3EoO9SasVwt4-86">
+          <mxGeometry x="-0.8121" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-88" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-84" target="dgGVusEM3EoO9SasVwt4-68">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-89" value="Да" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dgGVusEM3EoO9SasVwt4-88">
+          <mxGeometry x="0.4303" relative="1" as="geometry">
+            <mxPoint x="18" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-84" value="Подключение&lt;div&gt;успешно?&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5012" y="695" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-90" value="Конец" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5192" y="840" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
