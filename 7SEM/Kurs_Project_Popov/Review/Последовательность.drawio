@@ -1,9 +1,12 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="25.0.3">
   <diagram name="Страница — 1" id="wTVbVLARGpGQdvWJl2xj">
-    <mxGraphModel dx="-972" dy="861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="-1047" dy="818" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="dgGVusEM3EoO9SasVwt4-94" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5810" y="360" width="400" height="680" as="geometry" />
+        </mxCell>
         <mxCell id="dgGVusEM3EoO9SasVwt4-57" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="4360" y="360" width="400" height="680" as="geometry" />
         </mxCell>
@@ -288,6 +291,57 @@
         </mxCell>
         <mxCell id="dgGVusEM3EoO9SasVwt4-90" value="Конец" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="5192" y="840" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-111" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-91" target="dgGVusEM3EoO9SasVwt4-92">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-91" value="НАЧАЛО" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5950" y="385" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-110" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-92" target="dgGVusEM3EoO9SasVwt4-93">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-92" value="Инициализация: maxHeat = pixels[0]" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5950" y="500" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-104" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-93" target="dgGVusEM3EoO9SasVwt4-101">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-93" value="Для каждого i от 1 до 63" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5950" y="620" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-103" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-101" target="dgGVusEM3EoO9SasVwt4-93">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5930" y="780" />
+              <mxPoint x="5930" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-109" value="Нет" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dgGVusEM3EoO9SasVwt4-103">
+          <mxGeometry x="0.1388" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-105" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-101" target="dgGVusEM3EoO9SasVwt4-102">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-108" value="Да" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dgGVusEM3EoO9SasVwt4-105">
+          <mxGeometry x="-0.2238" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-101" value="pixels[i] &amp;gt; maxHeat?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5970" y="740" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-107" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-102" target="dgGVusEM3EoO9SasVwt4-106">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-102" value="Обновить maxHeat" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5950" y="880" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-106" value="Конец" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="5950" y="960" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
