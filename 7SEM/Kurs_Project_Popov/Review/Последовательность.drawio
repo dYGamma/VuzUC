@@ -1,9 +1,12 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="25.0.3">
   <diagram name="Страница — 1" id="wTVbVLARGpGQdvWJl2xj">
-    <mxGraphModel dx="-1286" dy="682" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="-432" dy="1169" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="dgGVusEM3EoO9SasVwt4-57" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4360" y="360" width="400" height="680" as="geometry" />
+        </mxCell>
         <mxCell id="dgGVusEM3EoO9SasVwt4-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;strokeColor=#314354;fontColor=#ffffff;" vertex="1" parent="1">
           <mxGeometry x="2760" y="585" width="880" height="400" as="geometry" />
         </mxCell>
@@ -148,6 +151,75 @@
         </mxCell>
         <mxCell id="dgGVusEM3EoO9SasVwt4-32" value="loop (1, n)" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#303030;flipH=0;flipV=0;" vertex="1" parent="1">
           <mxGeometry x="3530" y="590" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-33" target="dgGVusEM3EoO9SasVwt4-34">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-33" value="НАЧАЛО" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4410" y="540" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-34" target="dgGVusEM3EoO9SasVwt4-35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-34" value="Инициализация SPI и дисплея" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4410" y="640" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-47" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-35" target="dgGVusEM3EoO9SasVwt4-36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-35" value="Инициализация AMG8833" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4410" y="740" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-36" target="dgGVusEM3EoO9SasVwt4-37">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-36" value="Чтение данных (8x8 температур)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4410" y="840" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-37" target="dgGVusEM3EoO9SasVwt4-38">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-37" value="Преобразование в цветовую палитру" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4410" y="940" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-50" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-38" target="dgGVusEM3EoO9SasVwt4-39">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-38" value="Отображение тепловой карты" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4590" y="940" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-51" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-39" target="dgGVusEM3EoO9SasVwt4-40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-39" value="Поиск самой горячей точки" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4590" y="840" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-40" target="dgGVusEM3EoO9SasVwt4-41">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-40" value="Преобразование координат в углы" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4590" y="740" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-41" target="dgGVusEM3EoO9SasVwt4-42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-41" value="Управление сервоприводами" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4590" y="640" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-54" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="dgGVusEM3EoO9SasVwt4-42" target="dgGVusEM3EoO9SasVwt4-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-42" value="Обновление тепловой карты" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4590" y="540" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-44" value="Задержка" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4590" y="440" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-58" value="" style="shape=card;whiteSpace=wrap;html=1;rotation=-90;flipH=0;flipV=1;" vertex="1" parent="1">
+          <mxGeometry x="4370" y="350" width="80" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="dgGVusEM3EoO9SasVwt4-59" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;loop (1, n)&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="4380" y="385" width="60" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
