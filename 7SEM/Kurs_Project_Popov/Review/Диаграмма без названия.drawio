@@ -91,6 +91,61 @@
         <mxCell id="9DJTG4eF34QYmgAZXBlj-12" value="Обработка данных сенсора" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="1050" y="490" width="120" height="80" as="geometry" />
         </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="9DJTG4eF34QYmgAZXBlj-31" target="9DJTG4eF34QYmgAZXBlj-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-35" value="Данные получены" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9DJTG4eF34QYmgAZXBlj-34">
+          <mxGeometry x="0.0082" y="1" relative="1" as="geometry">
+            <mxPoint y="-19" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-31" value="Ожидание данных" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="470" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9DJTG4eF34QYmgAZXBlj-33" target="9DJTG4eF34QYmgAZXBlj-36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-38" value="Найден горячий&amp;nbsp;&lt;div&gt;пиксель&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9DJTG4eF34QYmgAZXBlj-37">
+          <mxGeometry x="-0.0533" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-40" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9DJTG4eF34QYmgAZXBlj-33" target="9DJTG4eF34QYmgAZXBlj-39">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-42" value="Данные получены и&amp;nbsp;&lt;div&gt;обработаны&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9DJTG4eF34QYmgAZXBlj-40">
+          <mxGeometry x="-0.0717" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-33" value="Обработка данных" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="470" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-36" value="Управление сервоприводами" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="720" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9DJTG4eF34QYmgAZXBlj-39" target="9DJTG4eF34QYmgAZXBlj-31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-44" value="Карта обновлена" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9DJTG4eF34QYmgAZXBlj-43">
+          <mxGeometry x="0.0686" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-39" value="Отображение тепловизионной карты на дисплей" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="720" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-46" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9DJTG4eF34QYmgAZXBlj-45" target="9DJTG4eF34QYmgAZXBlj-31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-47" value="Инициализация успешна" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9DJTG4eF34QYmgAZXBlj-46">
+          <mxGeometry x="-0.1072" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9DJTG4eF34QYmgAZXBlj-45" value="Запуск устройства" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="1760" y="330" width="100" height="100" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
