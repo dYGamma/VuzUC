@@ -1,25 +1,23 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-
+from scipy.optimize import minimize_scalar
+# близко к 0 Однако, из-за особенности функции значение функции для x = 0 будет бесконечность
 # Целевая функция
 def target_function(x):
     if x == 0:
         return float('-inf')  # Выколотая точка в отрезке, заданном условием
     return np.cos(x - 0.5) / abs(x)
 
-
 # Генерация начальной популяции
 def generate_population(pop_size, x_min, x_max):
     return [random.uniform(x_min, x_max) for i in range(pop_size)]
-
 
 # Оценка приспособленности особей
 def fitness(population):
     return [target_function(x) for x in population]
 
-
-# Выбор родителей   
+# Выбор родителей
 def select_parents(population, fitness_values):
     parents = []
     for k in range(len(population)):
@@ -30,11 +28,9 @@ def select_parents(population, fitness_values):
             parents.append(population[j])
     return parents
 
-
 # Кроссинговер
 def crossover(parent1, parent2):
     return (parent1 + parent2) / 2
-
 
 # Мутация
 def mutate(population, mutation_rate, x_min, x_max):
@@ -42,7 +38,6 @@ def mutate(population, mutation_rate, x_min, x_max):
         if random.random() < mutation_rate:
             population[i] = random.uniform(x_min, x_max)
     return population
-
 
 # Построение графика
 def plot_generation(population, generation, x_min, x_max, best_values, count):
@@ -60,17 +55,16 @@ def plot_generation(population, generation, x_min, x_max, best_values, count):
     plt.legend()
     plt.show()
 
-
 if __name__ == '__main__':
     # Инициализация переменных
-    population_size = 300  # Размер популяции
+    population_size = 50  # Размер популяции
     p_crossover = 0.5  # Вероятность появления потомка
-    p_mutation = 0.001  # Вероятность мутации у потомка
+    p_mutation = 0.01  # Вероятность мутации у потомка
     x_min = -10
     x_max = 10
     population = generate_population(population_size, x_min, x_max)  # Начальная популяция
     generation = 0  # Номер поколения
-    max_generations = 100  # Лимит по числу поколений
+    max_generations = 50  # Лимит по числу поколений
     best_fitness = float('-inf')  # Текущая лучшая особь
     best_values = []  # Массив лучших особей
     plot_steps = [0, 10, 25, 40]  # Номера популяций для которых будут строиться графики
@@ -117,6 +111,13 @@ if __name__ == '__main__':
     # Построение графика для последнего поколения
     plot_generation(population, generation, x_min, x_max, best_values, count)
 
-    # Вывод
+    # Вывод результата генетического алгоритма
     print(f"Population size = {population_size}, P crossover = {p_crossover}, P mutation = {p_mutation}")
     print(f"Maximum found at x = {best_values[-1]}, at generation = {generation}")
+
+    # Решение с помощью SciPy
+    result = minimize_scalar(lambda x: -target_function(x), bounds=(x_min, x_max), method='bounded')
+
+    # # Вывод решения SciPy
+    # print("\nScipy Optimization:")
+    # print(f"Maximum found at x = {result.x}, f(x) = {target_function(result.x)}")

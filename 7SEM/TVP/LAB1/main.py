@@ -1,0 +1,54 @@
+# Итеративная версия функции 2 * x1 + x2
+def iterative_function(x1, x2):
+    product = 0
+    for _ in range(2):  # Умножаем x1 на 2 как повторение сложения
+        product += x1
+    result = product + x2  # Добавляем x2
+    return result
+
+# Рекурсивная версия функции 2 * x1 + x2
+def recursive_function(x1, x2):
+    # Рекурсивная версия умножения x1 на 2
+    def recursive_double(x1, times=2):
+        if times == 0:
+            return 0
+        return x1 + recursive_double(x1, times - 1)
+    
+    product = recursive_double(x1)  # Вычисляем 2 * x1
+    return product + x2  # Добавляем x2
+
+# Функция для безопасного ввода значений
+def input_integer(prompt):
+    while True:
+        try:
+            value = int(input(prompt))
+            return value
+        except ValueError:
+            print("Ошибка: пожалуйста, введите корректное число.")
+
+# Главная программа
+def main():
+    print("Программа для вычисления выражения 2 * x1 + x2.\n")
+    print("Введите два числа (x1 и x2), чтобы программа рассчитала результат двумя методами: итеративным и рекурсивным.\n")
+    
+    # Ввод значений x1 и x2
+    x1 = input_integer("Введите значение x1: ")
+    x2 = input_integer("Введите значение x2: ")
+
+    # Вычисление итеративным способом
+    result_iterative = iterative_function(x1, x2)
+    print(f"Итеративный результат: {result_iterative}")
+
+    # Вычисление рекурсивным способом
+    result_recursive = recursive_function(x1, x2)
+    print(f"Рекурсивный результат: {result_recursive}")
+
+    # Проверка совпадения результатов
+    if result_iterative == result_recursive:
+        print("\nРезультаты совпадают! Функции работают корректно.")
+    else:
+        print("\nРезультаты не совпадают! Проверьте реализацию функций.")
+
+# Запуск программы
+if __name__ == "__main__":
+    main()

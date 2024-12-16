@@ -1,0 +1,22 @@
+digraph IDEF0 {
+	rankdir=TB
+	A0 [label="Система автоматического обнаружения и наведения" fillcolor=lightblue shape=box style=filled]
+	Input1 [label="Тепловая матрица (8x8)" fillcolor=lightyellow shape=ellipse style=filled]
+	Input2 [label="Сигнал с сервоприводов" fillcolor=lightyellow shape=ellipse style=filled]
+	Output1 [label="Изображение тепловой карты" fillcolor=lightgreen shape=ellipse style=filled]
+	Output2 [label="Положение камеры" fillcolor=lightgreen shape=ellipse style=filled]
+	Control1 [label="Алгоритм обработки данных" fillcolor=lightgray shape=hexagon style=filled]
+	Control2 [label="Команды от микроконтроллера" fillcolor=lightgray shape=hexagon style=filled]
+	Mechanism1 [label="Тепловизор AMG8833" fillcolor=lightpink shape=ellipse style=filled]
+	Mechanism2 [label="Arduino и сервоприводы" fillcolor=lightpink shape=ellipse style=filled]
+	Mechanism3 [label="Дисплей TFT" fillcolor=lightpink shape=ellipse style=filled]
+	Input1 -> A0 [label="Входные данные"]
+	Input2 -> A0 [label="Текущее положение"]
+	Control1 -> A0 [label="Обработка"]
+	Control2 -> A0 [label="Управление"]
+	A0 -> Output1 [label="Результаты отображения"]
+	A0 -> Output2 [label="Положение камеры"]
+	Mechanism1 -> A0 [label="Сбор данных"]
+	Mechanism2 -> A0 [label="Приводы"]
+	Mechanism3 -> A0 [label="Вывод"]
+}

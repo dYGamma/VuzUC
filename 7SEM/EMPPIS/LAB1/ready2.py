@@ -3,7 +3,7 @@ import random
 import matplotlib.pyplot as plt
 import scipy.optimize as opt
 
-# Определяем целевую функцию для минимизации
+# Определяем целевую функцию для минимизации (решения задачи коммивояжёра)
 def objective_function(x):
     if x == 0:  # Исключаем деление на 0
         return np.inf
@@ -78,14 +78,14 @@ def run_genetic_algorithm(pop_size, chromosome_length, min_x, max_x, generations
             global_best_fitness = best_fitness
             global_best_solution = best_x
 
-        print(f"Generation {generation + 1}: Best x = {best_x:.4f}, Best fitness = {best_fitness:.4f}")
+        print(f"Поколение {generation + 1}: Лучший x = {best_x:.4f}, Лучший фитнес = {best_fitness:.4f}")
 
     # Выводим глобально лучшее решение по завершению всех поколений
-    print(f"\nGlobal Best Solution after {generations} generations: Best x = {global_best_solution:.4f}, Best fitness = {global_best_fitness:.4f}")
+    print(f"\nГлобально лучшее решение после {generations} поколений: Лучший x = {global_best_solution:.4f}, Лучший фитнес = {global_best_fitness:.4f}")
 
     # Выводим значение функции для лучшего решения
     best_fitness_value = objective_function(global_best_solution)
-    print(f"Function value at the best x = {global_best_solution:.4f}: {best_fitness_value:.4f}")
+    print(f"Значение функции в лучшей точке x = {global_best_solution:.4f}:")
 
     return best_solutions  # Возвращаем лучшие решения для последующего анализа
 
