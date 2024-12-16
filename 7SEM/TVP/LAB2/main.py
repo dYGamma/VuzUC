@@ -106,9 +106,9 @@ def load_alphabet(filename):
 
 
 # загрузка данных из файлов
-tape = load_file('D:/GIT/VuzUC/7SEM/TVP/LAB2/tape.txt')  # лента
-program = load_program('D:/GIT/VuzUC/7SEM/TVP/LAB2/program.txt')  # программа
-alphabet = load_alphabet('D:/GIT/VuzUC/7SEM/TVP/LAB2/alphabet.txt')  # алфавит
+tape = load_file('LAB2/tape.txt')  # лента
+program = load_program('LAB2/program.txt')  # программа
+alphabet = load_alphabet('LAB2/alphabet.txt')  # алфавит
 
 # проверка символов на ленте на принадлежность алфавиту
 for symbol in tape:
