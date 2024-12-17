@@ -1,5 +1,13 @@
 import sys  # импортируем модуль sys для работы с системными сообщениями и завершением программы
-
+# ------------------------------------------------------
+# Функция называется вычислимой по Тьюрингу, если существует машина Тьюринга, 
+# правильно вычисляющая значения функции для любого входа. 
+# В случае зацикливания функция считается неопределенной
+# ------------------------------------------------------
+# Тезис Тьюринга утверждает, 
+# что любая вычислимая функция может быть реализована на машине Тьюринга, 
+# и если для функции нельзя создать алгоритм, то она не вычислима в принципе.
+# ------------------------------------------------------
 
 # класс для реализации машины Тьюринга
 class TuringMachine:
@@ -63,7 +71,7 @@ class TuringMachine:
             for line in self.history:
                 f.write(line + '\n')
             # записываем итоговое состояние ленты
-            f.write("Итоговое состояние ленты: " + ''.join(self.tape) + '\n')
+            f.write("The final status of the feed: " + ''.join(self.tape) + '\n')
 
 
 # функция для загрузки содержимого файла
@@ -94,7 +102,7 @@ def load_program(filename):
                 # сохраняем команду в словарь
                 program[(state.strip(), symbol.strip())] = (new_symbol.strip(), direction.strip(), new_state.strip())
             except ValueError:
-                print(f"Ошибка в строке программы: '{line}'")
+                print(f"Error in the program line: '{line}'")
                 sys.exit(1)  # завершаем выполнение, если ошибка при разборе строки
     return program
 
@@ -113,11 +121,11 @@ alphabet = load_alphabet('LAB2/alphabet.txt')  # алфавит
 # проверка символов на ленте на принадлежность алфавиту
 for symbol in tape:
     if symbol not in alphabet:
-        sys.exit(f"Ошибка: символ '{symbol}' не принадлежит алфавиту")
+        sys.exit(f"Error: the symbol '{symbol}' does not belong to the alphabet")
 
 # создание машины Тьюринга и выполнение программы
 tm = TuringMachine(tape, program, alphabet)
 tm.execute()
-tm.save_output('output.txt')  # сохранение результата в файл
+tm.save_output('LAB2/output.txt')  # сохранение результата в файл
 
 print("Выполнение завершено. Результаты сохранены в output.txt.")

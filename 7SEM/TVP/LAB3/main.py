@@ -1,5 +1,9 @@
 import re
-
+# ------------------------------------------------------------------
+# Программа имитирует вычисления в формальной системе Поста, 
+# применяя заданные правила преобразования к начальной строке (функции). 
+# Цель — пошагово изменять строку, используя правила, пока они применимы.
+# ------------------------------------------------------------------
 # Получение индекса переменной в строке
 def get_index(found_variables, ch):
     return found_variables.find(ch)
@@ -116,6 +120,7 @@ def apply_rules(function, variables, left_rules, right_rules):
 if __name__ == "__main__":
     # Инициализация переменных
     data = read_input("D:/GIT/VuzUC/7SEM/TVP/LAB3/input.txt")
+    # data = read_input("D:/GIT/VuzUC/7SEM/TVP/LAB3/input_incorr.txt")
     if data:
         function, alphabet, variables, axioms, left_rules, right_rules = data
         if is_input_correct(function, alphabet, variables, axioms, left_rules, right_rules):
