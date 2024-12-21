@@ -21,10 +21,10 @@ int find(vector<row> r, char s[1]);
 
 int main()
 {
-    setlocale(LC_ALL, "rus");
+    setlocale(LC_ALL, "ru_RU.UTF-8");
     string str;
     //считывает содержимое файла в строку
-    read_file(str, "input.txt");
+    read_file(str, "D:\\GIT\\VuzUC\\7SEM\\TVP\\LAB5\\input.txt");
     vector <vector <int>> delimiter(str.size() + 1, vector<int>());
     int count = 1;
     vector<row>rOfTable;//заголовки строк таблицы
