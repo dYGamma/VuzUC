@@ -76,33 +76,33 @@ else:
 print("══════════════════════════════════════════════════")
 
 
-# Построение графиков моделей
-fig, axs = plt.subplots(2, 3, figsize=(12, 8))
-fig.suptitle("Модели на основе полиномов", fontsize=16)
+# # Построение графиков моделей
+# fig, axs = plt.subplots(2, 3, figsize=(12, 8))
+# fig.suptitle("Модели на основе полиномов", fontsize=16)
 
-# f1: Полином второй степени
-axs[0, 0].scatter(t, Y, color='black', label="Исходные данные")
-axs[0, 0].plot(t, Y_f1, label="f1: полином 2-й степени", color='blue')
-axs[0, 0].set_title("f1: Полином 2-й степени", fontsize=10)
-axs[0, 0].legend(fontsize=8)
+# # f1: Полином второй степени
+# axs[0, 0].scatter(t, Y, color='black', label="Исходные данные")
+# axs[0, 0].plot(t, Y_f1, label="f1: полином 2-й степени", color='blue')
+# axs[0, 0].set_title("f1: Полином 2-й степени", fontsize=10)
+# axs[0, 0].legend(fontsize=8)
 
-# f2: Полиномы разных степеней
-colors = ['orange', 'green', 'purple', 'brown']
-for i, degree in enumerate(degrees):
-    row, col = divmod(i + 1, 3)
-    axs[row, col].scatter(t, Y, color='black', label="Исходные данные")
-    axs[row, col].plot(t, predictions_f2[i], label=f"f2: Полином {degree}-й степени", color=colors[i])
-    axs[row, col].set_title(f"f2: Полином {degree}-й степени", fontsize=10)
-    axs[row, col].legend(fontsize=8)
+# # f2: Полиномы разных степеней
+# colors = ['orange', 'green', 'purple', 'brown']
+# for i, degree in enumerate(degrees):
+#     row, col = divmod(i + 1, 3)
+#     axs[row, col].scatter(t, Y, color='black', label="Исходные данные")
+#     axs[row, col].plot(t, predictions_f2[i], label=f"f2: Полином {degree}-й степени", color=colors[i])
+#     axs[row, col].set_title(f"f2: Полином {degree}-й степени", fontsize=10)
+#     axs[row, col].legend(fontsize=8)
 
-# f3: Кубический корень
-axs[1, 2].scatter(t, Y, color='black', label="Исходные данные")
-axs[1, 2].plot(t, Y_f3, label="f3: ∛(x+1) + 1", color='red')
-axs[1, 2].set_title("f3: ∛(x+1) + 1", fontsize=10)
-axs[1, 2].legend(fontsize=8)
+# # f3: Кубический корень
+# axs[1, 2].scatter(t, Y, color='black', label="Исходные данные")
+# axs[1, 2].plot(t, Y_f3, label="f3: ∛(x+1) + 1", color='red')
+# axs[1, 2].set_title("f3: ∛(x+1) + 1", fontsize=10)
+# axs[1, 2].legend(fontsize=8)
 
-plt.subplots_adjust(hspace=0.5, wspace=0.4)
-plt.show()
+# plt.subplots_adjust(hspace=0.5, wspace=0.4)
+# plt.show()
 
 # Прогнозы на следующий интервал (8-й)
 t_forecast = np.append(t, 8)
@@ -117,33 +117,33 @@ Y_f3_forecast = np.cbrt(t_forecast + 1) + 1
 # Поднять прогноз f3 на 3 графике (добавляем смещение)
 Y_f3_forecast_adjusted = Y_f3_forecast + (Y_f3[-1] - Y_f3_forecast[-1])
 
-# Построение графиков прогнозов
-fig, axs = plt.subplots(1, 3, figsize=(15, 5))
-fig.suptitle("Прогнозы на 8-й интервал", fontsize=16)
+# # Построение графиков прогнозов
+# fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+# fig.suptitle("Прогнозы на 8-й интервал", fontsize=16)
 
-# f1 Прогноз
-axs[0].scatter(t, Y, color='black', label="Исходные данные")
-axs[0].plot(t_forecast, Y_f1_forecast, label="f1 прогноз", color='blue', linestyle='--')
-axs[0].scatter([8], [Y_f1_forecast[-1]], color='blue', marker='x', s=100, label="Прогноз f1 для 8-го интервала")
-axs[0].set_title("Прогноз f1", fontsize=10)
-axs[0].legend(fontsize=8)
+# # f1 Прогноз
+# axs[0].scatter(t, Y, color='black', label="Исходные данные")
+# axs[0].plot(t_forecast, Y_f1_forecast, label="f1 прогноз", color='blue', linestyle='--')
+# axs[0].scatter([8], [Y_f1_forecast[-1]], color='blue', marker='x', s=100, label="Прогноз f1 для 8-го интервала")
+# axs[0].set_title("Прогноз f1", fontsize=10)
+# axs[0].legend(fontsize=8)
 
-# f2 Прогноз
-axs[1].scatter(t, Y, color='black', label="Исходные данные")
-axs[1].plot(t_forecast, Y_f2_forecast, label=f"f2 прогноз ({degrees[best_degree_index]}-й степени)", color='orange', linestyle='--')
-axs[1].scatter([8], [Y_f2_forecast[-1]], color='orange', marker='x', s=100, label="Прогноз f2 для 8-го интервала")
-axs[1].set_title("Прогноз f2", fontsize=10)
-axs[1].legend(fontsize=8)
+# # f2 Прогноз
+# axs[1].scatter(t, Y, color='black', label="Исходные данные")
+# axs[1].plot(t_forecast, Y_f2_forecast, label=f"f2 прогноз ({degrees[best_degree_index]}-й степени)", color='orange', linestyle='--')
+# axs[1].scatter([8], [Y_f2_forecast[-1]], color='orange', marker='x', s=100, label="Прогноз f2 для 8-го интервала")
+# axs[1].set_title("Прогноз f2", fontsize=10)
+# axs[1].legend(fontsize=8)
 
-# f3 Прогноз (с поднятым прогнозом)
-axs[2].scatter(t, Y, color='black', label="Исходные данные")
-axs[2].plot(t_forecast, Y_f3_forecast_adjusted, label="f3 прогноз", color='red', linestyle='--')
-axs[2].scatter([8], [Y_f3_forecast_adjusted[-1]], color='red', marker='x', s=100, label="Прогноз f3 для 8-го интервала")
-axs[2].set_title("Прогноз f3", fontsize=10)
-axs[2].legend(fontsize=8)
+# # f3 Прогноз (с поднятым прогнозом)
+# axs[2].scatter(t, Y, color='black', label="Исходные данные")
+# axs[2].plot(t_forecast, Y_f3_forecast_adjusted, label="f3 прогноз", color='red', linestyle='--')
+# axs[2].scatter([8], [Y_f3_forecast_adjusted[-1]], color='red', marker='x', s=100, label="Прогноз f3 для 8-го интервала")
+# axs[2].set_title("Прогноз f3", fontsize=10)
+# axs[2].legend(fontsize=8)
 
-plt.subplots_adjust(hspace=0.3, wspace=0.5)
-plt.show()
+# plt.subplots_adjust(hspace=0.3, wspace=0.5)
+# plt.show()
 
 # Оценка точности моделей
 mse_f1 = mean_squared_error(Y, Y_f1)
@@ -207,7 +207,7 @@ print("════════════════════════�
 
 # Добавление третьего окна с графиками
 fig3, axs3 = plt.subplots(1, 2, figsize=(12, 6))
-fig3.suptitle("Все полиномы и предсказания", fontsize=16)
+fig3.suptitle(" полиномы и предсказания", fontsize=16)
 
 # График всех полиномов с предсказаниями для 8-го интервала
 axs3[0].scatter(t, Y, color='black', label="Исходные данные")
@@ -220,7 +220,7 @@ axs3[0].plot(t_forecast, Y_f2_forecast, label=f"f2 прогноз ({degrees[best
 axs3[0].scatter(8, Y_f1_forecast[-1], color='blue', marker='x', s=100, label="Прогноз f1 для 8-го интервала")
 axs3[0].scatter(8, Y_f2_forecast[-1], color='orange', marker='x', s=100, label="Прогноз f2 для 8-го интервала")
 
-axs3[0].set_title("Все полиномы", fontsize=12)
+axs3[0].set_title("Все Всеполиномы", fontsize=12)
 axs3[0].legend(fontsize=8)
 
 # График всех предсказаний
