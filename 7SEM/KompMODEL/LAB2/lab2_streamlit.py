@@ -140,7 +140,8 @@ def main():
     if selected_run < len(st.session_state.stats):
         stats1, stats2, stats_sum = st.session_state.stats[selected_run]
 
-    # Добавляем определение подтверждённых и отвергнутых теорий для выбранного цикла
+    # Добавляем определение подтверждённых и отвергнутых теорий для выбранного 
+    
     is_theory_confirmed1 = stats1['ks_pvalue'] > 0.05
     is_theory_confirmed2 = stats2['ks_pvalue'] > 0.05
     is_theory_confirmed_sum = stats_sum['ks_pvalue'] > 0.05
