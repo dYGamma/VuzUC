@@ -2,4 +2,4 @@
 
 ### Deploy:
 
-- **[Ссылочка](https://nac3yadjcs27e5hhanwbvr.streamlit.app/)**
+- **[Ссылочка](https://threelar.streamlit.app/)**

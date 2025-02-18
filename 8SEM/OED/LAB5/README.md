@@ -2,4 +2,4 @@
 
 ### Deploy:
 
-- **[Ссылочка](https://k9vy73xl2bgnfwlkssbc6v.streamlit.app/)**
+- **[Ссылочка](https://fivelar.streamlit.app/)**
