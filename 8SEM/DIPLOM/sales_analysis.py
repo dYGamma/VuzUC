@@ -12,7 +12,7 @@ class SalesAnalysisWindow(QWidget):
         super().__init__()
 
         self.setWindowTitle("Анализ продаж")
-        self.setFullScreen()
+        self.showFullScreen()
 
         self.previous_window = previous_window
         self.login_window = login_window
@@ -76,13 +76,17 @@ class SalesAnalysisWindow(QWidget):
         form_layout = QFormLayout()
         self.input_id = QLineEdit()
         self.input_region = QLineEdit()
-        self.input_analysis_date = QDateTimeEdit()
-        self.input_analysis_date.setDisplayFormat("dd.MM.yyyy")
-        self.input_analysis_date.setDateTime(QDateTime())
+        self.input_start_date = QDateTimeEdit()
+        self.input_start_date.setDisplayFormat("dd.MM.yyyy")
+        self.input_start_date.setDateTime(QDateTime())
+        self.input_end_date = QDateTimeEdit()
+        self.input_end_date.setDisplayFormat("dd.MM.yyyy")
+        self.input_end_date.setDateTime(QDateTime())
         
         form_layout.addRow("ID товара:", self.input_id)
         form_layout.addRow("Регион :", self.input_region)
-        form_layout.addRow("Дата анализа:", self.input_analysis_date)
+        form_layout.addRow("Начальная дата анализа:", self.input_start_date)
+        form_layout.addRow("Конечная дата анализа:", self.input_end_date)
 
         button_run_analysis = QPushButton("Запуск")
         button_clear = QPushButton("Очистить")
@@ -119,7 +123,8 @@ class SalesAnalysisWindow(QWidget):
     def run_analysis(self):
         # Get the search criteria from the input fields
         search_id = self.input_id.text()
-        search_date = self.input_analysis_date.text()
+        start_date = self.input_start_date.dateTime().toString("dd.MM.yyyy")
+        end_date = self.input_end_date.dateTime().toString("dd.MM.yyyy")
         search_region = self.input_region.text()
 
         # Construct the query based on the search criteria
@@ -129,13 +134,13 @@ class SalesAnalysisWindow(QWidget):
         if search_id:
             query += "id = ?"
             params.append(search_id)
-        if search_date:
+        if start_date and end_date:
             if search_id:
                 query += " AND "
-            query += "date = ?"
-            params.append(search_date)
+            query += "date BETWEEN ? AND ?"
+            params.extend([start_date, end_date])
         if search_region:
-            if search_id or search_date:
+            if search_id or start_date or end_date:
                 query += " AND "
             query += "region = ?"
             params.append(search_region)

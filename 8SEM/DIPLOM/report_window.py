@@ -13,7 +13,7 @@ class ReportAnalysisWindow(QWidget):
         super().__init__()
     
         self.setWindowTitle("Анализ продаж")
-        self.setFullScreen()
+        self.showFullScreen()
 
         self.previous_window = previous_window
         self.login_window = login_window
@@ -165,8 +165,8 @@ class ReportAnalysisWindow(QWidget):
             # Calculate average occurrences
             average_occurrences = product_counts.mean()
 
-            # Apply conditional formatting to highlight occurrences below the average
-            df_style = df.style.apply(lambda x: ['background-color: red' if product_counts.get(x['Product Name'], 0) < average_occurrences else '' for i in x], axis=1)
+            # Apply conditional formatting to highlight occurrences below and above the average
+            df_style = df.style.apply(lambda x: ['background-color: red' if product_counts.get(x['Product Name'], 0) < average_occurrences else 'background-color: green' if product_counts.get(x['Product Name'], 0) > average_occurrences else '' for i in x], axis=1)
 
             # Save the styled DataFrame to a file based on the selected format
             if file_extension == "png":
@@ -174,7 +174,7 @@ class ReportAnalysisWindow(QWidget):
                 df["Price"] = pd.to_numeric(df["Price"], errors="coerce")
 
                 product_counts.plot(kind='bar')
-                
+
                 plt.xlabel("Product Name")
                 plt.ylabel("Total Sales")
                 plt.title("Total Sales per Product")
@@ -199,6 +199,7 @@ class ReportAnalysisWindow(QWidget):
                 with pd.ExcelWriter(file_path, mode="a", engine="openpyxl") as writer:
                     df.to_excel(writer, index=False, sheet_name="Sales Data")
                     product_sales.to_excel(writer, index=False, sheet_name="Product Sales")
+
     # def save_report(self):
     #     # Get the selected report format
     #     if self.radio_pdf.isChecked():

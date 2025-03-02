@@ -14,7 +14,16 @@ class UserManagementWindow(QWidget):
         options = QFileDialog.Options()
         file_name, _ = QFileDialog.getOpenFileName(self, "Import Users", "", "Excel Files (*.xls *.xlsx)", options=options)  # Update file filter
         if file_name:
-            users_df = pd.read_excel(file_name)
+            try:
+                users_df = pd.read_excel(file_name)
+            except Exception as e:
+                QMessageBox.critical(self, "Ошибка", f"Ошибка при импорте пользователей: {str(e)}")
+                return
+            
+            if users_df.empty:
+                QMessageBox.warning(self, "Внимание", "Файл с пользователями пуст.")
+                return
+
             users_data = users_df.values.tolist()
             for user_data in users_data:
                 if len(user_data) == 4:
@@ -23,7 +32,6 @@ class UserManagementWindow(QWidget):
                                         (full_name, username, password, permissions))
             self.conn.commit()
             self.load_user_data()
-
     def export_users(self):
         options = QFileDialog.Options()
         file_name, _ = QFileDialog.getSaveFileName(self, "Export Users", "", "Excel Files (*.xlsx)", options=options)  # Update file filter
@@ -39,7 +47,7 @@ class UserManagementWindow(QWidget):
         super().__init__()
 
         self.setWindowTitle("Управление пользователями")
-        self.setFullScreen()
+        self.showFullScreen()
         
         self.previous_window = previous_window
         self.login_window = login_window
@@ -194,7 +202,7 @@ class UserManagementWindow(QWidget):
         top_layout = QHBoxLayout()
         back_button = QPushButton("Назад")
         logout_button = QPushButton("Выход из аккаунта")
-        username_label = QLabel(f"Юзер-нейм: {self.username}")
+        username_label = QLabel(f"Username: {self.username}")
 
         top_layout.addWidget(back_button)
         top_layout.addWidget(logout_button)
@@ -256,7 +264,17 @@ class UserManagementWindow(QWidget):
         username = self.username_input.text()
         password = self.password_input.text()
         permissions = self.permissions_combo.currentText()
-
+         # Проверяем, что все поля ввода заполнены
+        if not full_name or not username or not password:
+            QMessageBox.warning(self, "Пустые поля", "Пожалуйста, заполните все поля для добавления пользователя.")
+            return
+            # Проверяем уникальность имени пользователя
+        query = "SELECT * FROM users WHERE username = ?"
+        self.cursor.execute(query, (username,))
+        existing_user = self.cursor.fetchone()
+        if existing_user:
+            QMessageBox.warning(self, "Пользователь уже существует", "Пользователь с таким именем уже существует. Пожалуйста, выберите другое имя пользователя.")
+            return
         # Insert the new user into the database
         query = "INSERT INTO users (full_name, username, password, permissions) VALUES (?, ?, ?, ?)"
         self.cursor.execute(query, (full_name, username, password, permissions))
@@ -315,6 +333,9 @@ class UserManagementWindow(QWidget):
     def delete_user(self):
         # Delete user(s) by ID(s)
         input_ids = self.search_id_input.text()
+        if not input_ids:
+            QMessageBox.warning(self, "Пустой ввод", "Пожалуйста, введите ID(-ы) пользователя(-ей) для удаления.")
+            return
         # Remove extra spaces before splitting IDs
         input_ids = input_ids.replace(" ", "")
         user_ids = input_ids.split(',')
@@ -332,6 +353,12 @@ class UserManagementWindow(QWidget):
         username = self.edit_username_input.text()
         password = self.edit_password_input.text()
         permissions = self.edit_permissions_combo.currentText()
+        # Проверяем, что все поля ввода заполнены
+        if not full_name or not username or not password:
+            QMessageBox.warning(self, "Пустые поля", "Пожалуйста, заполните все поля для сохранения изменений.")
+            return
+
+
 
         query = """
         UPDATE users 
