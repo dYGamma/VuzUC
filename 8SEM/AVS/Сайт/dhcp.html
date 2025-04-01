@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки DHCP</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Настройки DHCP</h1>
+    <pre>
+option domain-name "samarin.g4134.guap.local";
+default-lease-time 86400;
+max-lease-time 86400;
+
+include "/etc/bind/rndc.key";
+ddns-updates on;
+ddns-update-style interim;
+ignore client-updates;
+update-static-leases on;
+
+zone samarin.g4134.guap.local. {
+    primary 10.34.12.7;
+    key rndc-key;
+}
+
+zone 12.34.10.in-addr.arpa. {
+    primary 10.34.12.7;
+    key rndc-key;
+}
+
+subnet 10.34.12.0 netmask 255.255.255.0 {
+    option broadcast-address 10.34.12.255;
+    option routers 10.34.12.8;
+    option domain-name "samarin.g4134.guap.local";
+    option domain-search "samarin.g4134.guap.local";
+    option domain-name-servers 10.34.12.7;
+    range 10.34.12.9 10.34.12.254;
+}
+
+subnet 192.168.34.0 netmask 255.255.255.0 {
+    option broadcast-address 192.168.34.255;
+    option routers 192.168.34.8;
+    option domain-name "samarin.g4134.guap.local";
+    option domain-search "samarin.g4134.guap.local";
+    option domain-name-servers 10.34.12.7;
+    range 192.168.34.9 192.168.34.254;
+}
+
+host dmitriy {
+    hardware ethernet 08:00:27:11:ec:9e;
+    fixed-address 10.34.12.7;
+}</pre>
+</body>
+</html>

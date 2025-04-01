@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таблицы маршрутизации</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Таблицы маршрутизации</h1>
+
+    <h2>Контроллер домена</h2>
+    <table>
+        <tr>
+            <th>Маршрут</th>
+            <th>Маршрутизатор</th>
+            <th>Интерфейс</th>
+            <th>Протокол</th>
+            <th>Метрика</th>
+        </tr>
+            <tr>
+            <td>default</td>
+            <td>10.34.12.8</td>
+            <td>eth0</td>
+            <td>static</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>10.34.12.0/24</td>
+            <td>-</td>
+            <td>eth0</td>
+            <td>kernel</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>192.168.34.0/24</td>
+            <td>10.34.12.8</td>
+            <td>eth0</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+    </table>
+
+    <h2>Файловый сервер</h2>
+    <table>
+        <tr>
+            <th>Маршрут</th>
+            <th>Маршрутизатор</th>
+            <th>Интерфейс</th>
+            <th>Протокол</th>
+            <th>Метрика</th>
+        </tr>
+        <tr>
+            <td>default</td>
+            <td>10.34.12.1</td>
+            <td>eth0</td>
+            <td>static</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>default</td>
+            <td>192.168.34.1</td>
+            <td>eth1</td>
+            <td>static</td>
+            <td>101</td>
+        </tr>
+        <tr>
+            <td>10.34.12.0/24</td>
+            <td>10.34.12.8</td>
+            <td>eth0</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>10.34.12.0/24</td>
+            <td>-</td>
+            <td>eth0</td>
+            <td>kernel</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>192.168.34.0/24</td>
+            <td>192.168.34.8</td>
+            <td>eth1</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>192.168.34.0/24</td>
+            <td>-</td>
+            <td>eth1</td>
+            <td>kernel</td>
+            <td>101</td>
+        </tr>
+    </table>
+
+    <h2>Клиент 1</h2>
+    <table>
+        <tr>
+            <th>Маршрут</th>
+            <th>Маршрутизатор</th>
+            <th>Интерфейс</th>
+            <th>Протокол</th>
+            <th>Метрика</th>
+        </tr>
+        <tr>
+            <td>default</td>
+            <td>10.34.12.8</td>
+            <td>eth0</td>
+            <td>dhcp</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>10.34.12.0/24</td>
+            <td>-</td>
+            <td>eth0</td>
+            <td>kernel</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>192.168.34.0/24</td>
+            <td>10.34.12.8</td>
+            <td>eth0</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+    </table>
+
+    <h2>Клиент 2</h2>
+    <table>
+        <tr>
+            <th>Маршрут</th>
+            <th>Маршрутизатор</th>
+            <th>Интерфейс</th>
+            <th>Протокол</th>
+            <th>Метрика</th>
+        </tr>
+        <tr>
+            <td>default</td>
+            <td>192.168.34.8</td>
+            <td>eth0</td>
+            <td>dhcp</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>192.168.34.0/24</td>
+            <td>-</td>
+            <td>eth0</td>
+            <td>kernel</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>10.34.12.0/24</td>
+            <td>192.168.34.8</td>
+            <td>eth0</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+    </table>
+</body>
+</html>

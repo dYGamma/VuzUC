@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки DNS</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Настройки DNS</h1>
+    <pre>
+zone "samarin.g4134.guap.local" {
+    type master;
+    file "/etc/bind/zones/db.samarin.g4134.guap.local";
+    allow-update { key "rndc-key"; };
+};
+
+zone "12.34.10.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/db.12.34.10";
+    allow-update { key "rndc-key"; };
+};
+
+$TTL 604800
+@ IN SOA dmitriy.samarin.g4134.guap.local. root.samarin.g4134.guap.local. (
+    2 ; Serial
+    604800 ; Refresh
+    86400 ; Retry
+    2419200 ; Expire
+    604800) ; Negative Cache TTL
+;
+@ IN NS dmitriy.samarin.g4134.guap.local.
+dmitriy IN A 10.34.12.7
+vasiliy IN A 10.34.12.8
+www IN CNAME vasiliy
+$TTL 604800
+@ IN SOA dmitriy.samarin.g4134.guap.local. root.samarin.g4134.guap.local. (
+    2 ; Serial
+    604800 ; Refresh
+    86400 ; Retry
+    2419200 ; Expire
+    604800) ; Negative Cache TTL
+;
+@ IN NS dmitriy.samarin.g4134.guap.local.
+7 IN PTR dmitriy.samarin.g4134.guap.local.
+8 IN PTR vasiliy.samarin.g4134.guap.local.</pre>
+</body>
+</html>

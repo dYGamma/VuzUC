@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Основные команды для работы в сети</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Основные команды для работы в сети</h1>
+    <h3>Подключение к серверу по протоколу FTP</h3>
+    <pre>ftp &lt;domain&gt;</pre>
+    <h3>Получение данных по протоколу FTP</h3>
+    <pre>get &lt;file_name&gt;</pre>
+    <h3>Получение данных по протоколу HTTP</h3>
+    <pre>http://&lt;domain&gt;/index.html</pre>
+    <h3>Подключение к серверу по протоколу SAMBA</h3>
+    <pre>sudo mount -t cifs //&lt;domain&gt;/&lt;/directory/alias&gt; &lt;/directory/to/mount&gt; -o username=&lt;username&gt;</pre>
+    <h3>Подключение к серверу по протоколу NFS</h3>
+    <pre>sudo mount -t nfs &lt;domain&gt;:/&lt;/directory/location/server&gt; &lt;/directory/to/mount&gt;</pre>
+    <h3>Демонтирование подключенной директории</h3>
+    <pre>sudo umount &lt;/directory/to/mount&gt;</pre>
+</body>
+</html>

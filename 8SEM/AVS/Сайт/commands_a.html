@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Основные команды для администрирования сети</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Основные команды для администрирования сети</h1>
+    <h3>Запуск ALD-домена</h3>
+    <pre>sudo ald-init start</pre>
+    <h3>Остановка ALD-домена</h3>
+    <pre>sudo ald-init stop</pre>
+    <h3>Создание ALD-домена</h3>
+    <pre>sudo ald-init init</pre>
+    <h3>Удаление ALD-домена</h3>
+    <pre>sudo ald-init destroy</pre>
+    <h3>Подключение клиента к ALD-домену</h3>
+    <pre>sudo ald-client join &lt;domain&gt;</pre>
+    <h3>Перезапуск DHCP сервера</h3>
+    <pre>sudo systemctl restart isc-dhcp-server</pre>
+    <h3>Перезапуск DNS сервера</h3>
+    <pre>sudo systemctl restart bind9</pre>
+    <h3>Перезапуск FTP сервера</h3>
+    <pre>sudo systemctl restart vsftpd</pre>
+    <h3>Перезапуск HTML сервера</h3>
+    <pre>sudo systemctl restart apache2</pre>
+    <h3>Перезапуск SAMBA сервера</h3>
+    <pre>sudo systemctl restart smbd</pre>
+    <h3>Перезапуск NFS сервера</h3>
+    <pre>sudo systemctl restart nfs-kernel-server</pre>
+</body>
+</html>

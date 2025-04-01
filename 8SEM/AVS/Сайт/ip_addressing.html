@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP адреса устройств</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>IP адреса устройств в сети</h1>
+    <table>
+        <tr>
+            <th>Устройство</th>
+            <th>Подсеть</th>
+            <th>Маска сети</th>
+            <th>IP адрес</th>
+            <th>Шлюз</th>
+            <th>Метод назначения</th>
+        </tr>
+        <tr>
+            <td>Контроллер домена</td>
+            <td>10.34.12.0</td>
+            <td>255.255.255.0</td>
+            <td>10.34.12.7</td>
+            <td>10.34.12.8</td>
+            <td>Статический</td>
+        </tr>
+        <tr>
+            <td>Файловый сервер (интерфейс 1)</td>
+            <td>10.34.12.0</td>
+            <td>255.255.255.0</td>
+            <td>10.34.12.8</td>
+            <td>10.34.12.1</td>
+            <td>Статический</td>
+        </tr>
+        <tr>
+            <td>Файловый сервер (интерфейс 2)</td>
+            <td>192.168.34.0</td>
+            <td>255.255.255.0</td>
+            <td>192.168.34.8</td>
+            <td>192.168.34.1</td>
+            <td>Статический</td>
+        </tr>
+        <tr>
+            <td>Первый клиент</td>
+            <td>10.34.12.0</td>
+            <td>255.255.255.0</td>
+            <td>10.34.12.9</td>
+            <td>10.34.12.8</td>
+            <td>DHCP</td>
+        </tr>
+        <tr>
+            <td>Второй клиент</td>
+            <td>192.168.34.0</td>
+            <td>255.255.255.0</td>
+            <td>192.168.34.9</td>
+            <td>192.168.34.8</td>
+            <td>DHCP</td>
+        </tr>
+    </table>
+</body>
+</html>
