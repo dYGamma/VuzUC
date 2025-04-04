@@ -1,12 +1,18 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
                              QPushButton, QTableWidget, QTableWidgetItem, QGroupBox, 
-                             QFormLayout, QLineEdit, QDateEdit, QComboBox, QCheckBox,
+                             QFormLayout, QLineEdit, QDateTimeEdit, QComboBox, QCheckBox,
                              QFileDialog, QScrollArea, QSizePolicy, QSlider, QGridLayout)
-from PyQt5.QtCore import Qt, QDate
+from PyQt5.QtCore import Qt, QDateTime, QDate
 from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWebEngineWidgets import QWebEngineView
 import sqlite3
+import matplotlib
+# Используем подходящий backend для интеграции с Qt
+matplotlib.use('Qt5Agg')
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+from matplotlib.dates import DateFormatter
 import numpy as np
 import pandas as pd
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
@@ -20,21 +26,20 @@ from sklearn.preprocessing import StandardScaler
 from prophet import Prophet
 from statsmodels.tsa.arima.model import ARIMA
 from sklearn.decomposition import PCA
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
-# Для красивого оформления можно установить тему Plotly
-px.defaults.template = "plotly_white"
+# Устанавливаем стиль seaborn для красивых графиков
+sns.set(style="whitegrid")
 
-# Виджет для отображения Plotly графиков через QWebEngineView
-class PlotlyWidget(QWebEngineView):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+class MplCanvas(FigureCanvas):
+    def __init__(self, parent=None, width=10, height=6, dpi=100):
+        self.fig = Figure(figsize=(width, height), dpi=dpi)
+        super(MplCanvas, self).__init__(self.fig)
+        self.setParent(parent)
+        self.axes = self.fig.add_subplot(111)
         
-    def update_plot(self, fig):
-        html = fig.to_html(include_plotlyjs='cdn')
-        self.setHtml(html)
+    def clear(self):
+        self.fig.clf()
+        self.axes = self.fig.add_subplot(111)
 
 class SalesAnalysisWindow(QWidget):
     def __init__(self, previous_window, login_window, username):
@@ -42,9 +47,11 @@ class SalesAnalysisWindow(QWidget):
         self.previous_window = previous_window
         self.login_window = login_window
         self.username = username
+        self.current_figure = None
         self.sales_data = []
         self.init_db()
         self.init_ui()
+        
         self.populate_sales_table()
         self.setWindowTitle("Анализ продаж")
         self.showMaximized()
@@ -79,7 +86,7 @@ class SalesAnalysisWindow(QWidget):
         # Основное содержимое окна
         content_layout = QHBoxLayout()
         
-        # Левая панель – таблица и фильтры
+        # Левая панель - таблица и фильтры
         left_panel = QVBoxLayout()
         self.sales_table = QTableWidget()
         self.sales_table.setColumnCount(6)
@@ -110,26 +117,12 @@ class SalesAnalysisWindow(QWidget):
         
         self.region_filter = QComboBox()
         self.product_filter = QComboBox()
-        
-        # Настройка элементов выбора даты без времени, с календарем и заданным форматом
-        self.date_start = QDateEdit()
-        self.date_start.setCalendarPopup(True)
-        self.date_start.setDisplayFormat("dd.MM.yyyy")
-        self.date_start.setDate(QDate.currentDate().addMonths(-1))
-        
-        self.date_end = QDateEdit()
-        self.date_end.setCalendarPopup(True)
-        self.date_end.setDisplayFormat("dd.MM.yyyy")
-        self.date_end.setDate(QDate.currentDate())
-        
-        self.compare_date_start = QDateEdit()
-        self.compare_date_start.setCalendarPopup(True)
-        self.compare_date_start.setDisplayFormat("dd.MM.yyyy")
-        
-        self.compare_date_end = QDateEdit()
-        self.compare_date_end.setCalendarPopup(True)
-        self.compare_date_end.setDisplayFormat("dd.MM.yyyy")
-        
+        self.date_start = QDateTimeEdit()
+        self.date_start.setDateTime(QDateTime.currentDateTime().addMonths(-1))
+        self.date_end = QDateTimeEdit()
+        self.date_end.setDateTime(QDateTime.currentDateTime())
+        self.compare_date_start = QDateTimeEdit()
+        self.compare_date_end = QDateTimeEdit()
         self.forecast_method = QComboBox()
         self.forecast_method.addItems(["Скользящее среднее", "Линейная регрессия", "Экспоненциальное сглаживание"])
         
@@ -152,9 +145,9 @@ class SalesAnalysisWindow(QWidget):
         filter_group.setLayout(filter_layout)
         left_panel.addWidget(filter_group)
         
-        # Правая панель – область визуализации с Plotly
+        # Правая панель - область визуализации
         right_panel = QVBoxLayout()
-        self.plotlyWidget = PlotlyWidget(self)
+        self.canvas = MplCanvas(self, width=10, height=8)
         
         # Панель с кнопками управления
         button_layout = QHBoxLayout()
@@ -165,7 +158,7 @@ class SalesAnalysisWindow(QWidget):
         button_layout.addWidget(self.export_button)
         button_layout.addWidget(self.reset_button)
         
-        right_panel.addWidget(self.plotlyWidget)
+        right_panel.addWidget(self.canvas)
         right_panel.addLayout(button_layout)
         
         content_layout.addLayout(left_panel, 40)
@@ -189,12 +182,14 @@ class SalesAnalysisWindow(QWidget):
         analysis_type = self.analysis_type.currentText()
         forecast_visible = analysis_type in ["Прогноз продаж", "Прогноз (ARIMA/Prophet)"]
         self.forecast_method.setVisible(forecast_visible)
+        
         if analysis_type == "Прогноз (ARIMA/Prophet)":
             self.forecast_method.clear()
             self.forecast_method.addItems(["ARIMA", "Prophet"])
         elif analysis_type == "Прогноз продаж":
             self.forecast_method.clear()
             self.forecast_method.addItems(["Скользящее среднее", "Линейная регрессия", "Экспоненциальное сглаживание"])
+        
         self.compare_date_start.setVisible(analysis_type == "Сравнение периодов")
         self.compare_date_end.setVisible(analysis_type == "Сравнение периодов")
 
@@ -212,54 +207,57 @@ class SalesAnalysisWindow(QWidget):
         self.product_filter.addItems(products)
 
     def run_analysis(self):
+        self.canvas.clear()
         analysis_type = self.analysis_type.currentText()
         data = self.get_filtered_data()
-        # В зависимости от выбранного типа анализа вызывается соответствующий метод,
-        # который генерирует Plotly-объект и обновляет виджет
+        
         if analysis_type == "Распределение продуктов":
-            fig = self.show_product_distribution(data)
+            self.show_product_distribution(data)
         elif analysis_type == "Продажи по регионам":
-            fig = self.show_region_sales(data)
+            self.show_region_sales(data)
         elif analysis_type == "Динамика продаж":
-            fig = self.show_time_series(data)
+            self.show_time_series(data)
         elif analysis_type == "Прогноз продаж":
-            fig = self.show_forecast(data)
+            self.show_forecast(data)
         elif analysis_type == "Статистические показатели":
-            fig = self.show_statistics(data)
+            self.show_statistics(data)
         elif analysis_type == "Тепловая карта продаж":
-            fig = self.show_heatmap(data)
+            self.show_heatmap(data)
         elif analysis_type == "Сравнение периодов":
-            fig = self.compare_periods(data)
+            self.compare_periods(data)
         elif analysis_type == "Сезонное разложение":
-            fig = self.show_seasonal_decomposition(data)
+            self.show_seasonal_decomposition(data)
         elif analysis_type == "Анализ выбросов":
-            fig = self.show_outliers(data)
+            self.show_outliers(data)
         elif analysis_type == "Кластерный анализ":
-            fig = self.show_cluster_analysis(data)
+            self.show_cluster_analysis(data)
         elif analysis_type == "Корреляционный анализ":
-            fig = self.show_correlation_analysis(data)
+            self.show_correlation_analysis(data)
         elif analysis_type == "Прогноз (ARIMA/Prophet)":
-            fig = self.show_arima_prophet_forecast(data)
+            self.show_arima_prophet_forecast(data)
         elif analysis_type == "Кумулятивные продажи":
-            fig = self.show_cumulative_sales(data)
+            self.show_cumulative_sales(data)
         elif analysis_type == "Распределение цен":
-            fig = self.show_price_distribution(data)
-        else:
-            fig = go.Figure()
-        self.plotlyWidget.update_plot(fig)
+            self.show_price_distribution(data)
+        
+        self.canvas.draw()
 
     def get_filtered_data(self):
         region = self.region_filter.currentText()
         region_param = '%' if region == "Все регионы" else f'%{region}%'
         product = self.product_filter.currentText()
-        product_param = '%' if product == "Все товары" else f'%{product}%'
+        if product == "Все товары":
+            product_param = '%'
+        else:
+            product_param = f'%{product}%'
+        
         query = '''SELECT * FROM sales 
                    WHERE date BETWEEN ? AND ?
                    AND region LIKE ?
                    AND product_name LIKE ?'''
         params = (
-            self.date_start.date().toString("dd.MM.yyyy"),
-            self.date_end.date().toString("dd.MM.yyyy"),
+            self.date_start.dateTime().toString("dd.MM.yyyy"),
+            self.date_end.dateTime().toString("dd.MM.yyyy"),
             region_param,
             product_param
         )
@@ -270,26 +268,26 @@ class SalesAnalysisWindow(QWidget):
         products = defaultdict(float)
         for row in data:
             products[row[1]] += row[5]
-        df = pd.DataFrame({
-            'Продукт': list(products.keys()),
-            'Продажи': list(products.values())
-        })
-        fig = px.pie(df, values='Продажи', names='Продукт',
-                     title="Распределение продаж по продуктам",
-                     hole=0.3)
-        return fig
+        
+        self.canvas.axes.pie(
+            products.values(), 
+            labels=products.keys(),
+            autopct='%1.1f%%',
+            startangle=90
+        )
+        self.canvas.axes.set_title('Распределение продаж по продуктам')
 
     def show_region_sales(self, data):
         regions = defaultdict(float)
         for row in data:
             regions[row[3]] += row[5]
-        df = pd.DataFrame({
-            'Регион': list(regions.keys()),
-            'Продажи': list(regions.values())
-        })
-        fig = px.bar(df, x='Регион', y='Продажи', title="Продажи по регионам")
-        fig.update_layout(xaxis_tickangle=-45)
-        return fig
+        
+        x = list(regions.keys())
+        y = list(regions.values())
+        
+        self.canvas.axes.bar(x, y)
+        self.canvas.axes.set_title('Продажи по регионам')
+        self.canvas.axes.tick_params(axis='x', rotation=45)
 
     def show_time_series(self, data):
         dates = []
@@ -299,38 +297,45 @@ class SalesAnalysisWindow(QWidget):
             dates.append(date)
             amounts.append(row[5])
         if not dates or not amounts:
-            return go.Figure().add_annotation(text="Нет данных для отображения", x=0.5, y=0.5, showarrow=False)
-        df = pd.DataFrame({'Дата': dates, 'Продажи': amounts})
-        fig = px.line(df, x='Дата', y='Продажи', title="Динамика продаж", markers=True)
-        return fig
+            self.canvas.axes.text(0.5, 0.5, 'Нет данных для отображения', ha='center', va='center')
+            return
+        
+        self.canvas.axes.clear()
+        self.canvas.axes.plot(dates, amounts, marker='o', lw=2, color='tab:blue')
+        self.canvas.axes.set_title('Динамика продаж')
+        self.canvas.axes.xaxis.set_major_formatter(DateFormatter("%d.%m.%Y"))
+        self.canvas.fig.autofmt_xdate()
 
     def show_forecast(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        # Переименование столбцов на русский язык
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
-        df['Дата'] = pd.to_datetime(df['Дата'], format='%d.%m.%Y')
-        df = df.set_index('Дата').resample('D').sum().reset_index()
+        df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
+        df = df.resample('D', on='date').sum().reset_index()
+        
         if len(df) < 5:
-            return go.Figure().add_annotation(text="Недостаточно данных для прогноза", x=0.5, y=0.5, showarrow=False)
+            self.canvas.axes.text(0.5, 0.5, 'Недостаточно данных для прогноза', ha='center', va='center')
+            return
+        
         method = self.forecast_method.currentText()
+        
         if method == "Скользящее среднее":
             window_size = 3
-            df['Прогноз'] = df['Цена'].rolling(window_size).mean()
+            df['forecast'] = df['price'].rolling(window_size).mean()
         elif method == "Линейная регрессия":
             X = np.arange(len(df)).reshape(-1, 1)
-            y = df['Цена'].values
+            y = df['price'].values
             model = LinearRegression().fit(X, y)
-            df['Прогноз'] = model.predict(X)
+            df['forecast'] = model.predict(X)
         elif method == "Экспоненциальное сглаживание":
-            model = ExponentialSmoothing(df['Цена'], seasonal='add', seasonal_periods=7)
+            model = ExponentialSmoothing(df['price'], seasonal='add', seasonal_periods=7)
             model_fit = model.fit()
-            df['Прогноз'] = model_fit.predict(start=0, end=len(df)-1)
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=df['Дата'], y=df['Цена'], mode='lines+markers', name='Фактические'))
-        fig.add_trace(go.Scatter(x=df['Дата'], y=df['Прогноз'], mode='lines', name='Прогноз'))
-        fig.update_layout(title=f"Прогноз продаж ({method})", xaxis_title="Дата", yaxis_title="Продажи")
-        return fig
+            df['forecast'] = model_fit.predict(start=0, end=len(df)-1)
+        
+        self.canvas.axes.plot(df['date'], df['price'], label='Фактические')
+        self.canvas.axes.plot(df['date'], df['forecast'], label='Прогноз')
+        self.canvas.axes.legend()
+        self.canvas.axes.set_title(f'Прогноз продаж ({method})')
+        self.canvas.axes.xaxis.set_major_formatter(DateFormatter("%d.%m.%Y"))
+        self.canvas.fig.autofmt_xdate()
 
     def show_statistics(self, data):
         prices = [row[5] for row in data]
@@ -343,165 +348,177 @@ class SalesAnalysisWindow(QWidget):
             ("Стандартное отклонение", np.std(prices) if prices else 0),
             ("Медиана", np.median(prices) if prices else 0)
         ]
-        header = [x[0] for x in stats]
-        values = [x[1] for x in stats]
-        fig = go.Figure(data=[go.Table(
-            header=dict(values=["Показатель", "Значение"]),
-            cells=dict(values=[header, values])
-        )])
-        fig.update_layout(title="Статистические показатели")
-        return fig
+        
+        self.canvas.axes.axis('off')
+        table = self.canvas.axes.table(
+            cellText=stats,
+            loc='center',
+            colLabels=('Показатель', 'Значение'),
+            cellLoc='center'
+        )
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+        table.scale(1, 2)
 
     def show_heatmap(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
+        
         try:
-            pivot = df.pivot_table(index='Регион', columns='Продукт', values='Цена', aggfunc='sum', fill_value=0)
-            fig = px.imshow(pivot, text_auto=True, aspect="auto", title="Тепловая карта продаж")
-            return fig
+            pivot = df.pivot_table(
+                index='region', 
+                columns='product', 
+                values='price', 
+                aggfunc='sum'
+            ).fillna(0)
+            
+            self.canvas.fig.clf()
+            ax = self.canvas.fig.add_subplot(111)
+            sns.heatmap(pivot, ax=ax, cmap="YlGnBu", annot=True, fmt=".1f")
+            ax.set_title('Тепловая карта продаж')
+            self.canvas.fig.tight_layout()
+            
         except Exception as e:
-            return go.Figure().add_annotation(text="Ошибка визуализации", x=0.5, y=0.5, showarrow=False)
+            self.canvas.axes.text(0.5, 0.5, 'Ошибка визуализации', ha='center', va='center')
 
     def compare_periods(self, data):
         # Основной период
         main_dates = [datetime.strptime(row[4], "%d.%m.%Y") for row in data]
         main_prices = [row[5] for row in data]
+        
         # Сравниваемый период
         query = '''SELECT * FROM sales 
                    WHERE date BETWEEN ? AND ?'''
         params = (
-            self.compare_date_start.date().toString("dd.MM.yyyy"),
-            self.compare_date_end.date().toString("dd.MM.yyyy")
+            self.compare_date_start.dateTime().toString("dd.MM.yyyy"),
+            self.compare_date_end.dateTime().toString("dd.MM.yyyy")
         )
         self.cursor.execute(query, params)
         compare_data = self.cursor.fetchall()
         compare_dates = [datetime.strptime(row[4], "%d.%m.%Y") for row in compare_data]
         compare_prices = [row[5] for row in compare_data]
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=main_dates, y=main_prices, mode='lines+markers', name='Основной период'))
-        fig.add_trace(go.Scatter(x=compare_dates, y=compare_prices, mode='lines+markers', name='Сравниваемый период'))
-        fig.update_layout(title="Сравнение периодов", xaxis_title="Дата", yaxis_title="Продажи")
-        return fig
+        
+        self.canvas.axes.plot(main_dates, main_prices, label='Основной период')
+        self.canvas.axes.plot(compare_dates, compare_prices, label='Сравниваемый период')
+        self.canvas.axes.legend()
+        self.canvas.axes.set_title('Сравнение периодов')
+        self.canvas.axes.xaxis.set_major_formatter(DateFormatter("%d.%m.%Y"))
+        self.canvas.fig.autofmt_xdate()
 
     def show_seasonal_decomposition(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
         df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
-        df = df.set_index('date').resample('D').sum()
+        df = df.resample('D', on='date').sum()
+        
         if len(df) < 30:
-            return go.Figure().add_annotation(text="Недостаточно данных для анализа", x=0.5, y=0.5, showarrow=False)
+            self.canvas.axes.text(0.5, 0.5, 'Недостаточно данных для анализа', ha='center', va='center')
+            return
+        
         decomposition = seasonal_decompose(df['price'], model='additive', period=7)
-        dates = df.index
-        fig = make_subplots(rows=4, cols=1, shared_xaxes=True,
-                            subplot_titles=["Наблюдаемый", "Тренд", "Сезонность", "Остатки"])
-        fig.add_trace(go.Scatter(x=dates, y=decomposition.observed, mode='lines', name="Наблюдаемый"), row=1, col=1)
-        fig.add_trace(go.Scatter(x=dates, y=decomposition.trend, mode='lines', name="Тренд"), row=2, col=1)
-        fig.add_trace(go.Scatter(x=dates, y=decomposition.seasonal, mode='lines', name="Сезонность"), row=3, col=1)
-        fig.add_trace(go.Scatter(x=dates, y=decomposition.resid, mode='lines', name="Остатки"), row=4, col=1)
-        fig.update_layout(height=800, title_text="Сезонное разложение")
-        return fig
+        
+        self.canvas.fig.clf()
+        axes = self.canvas.fig.subplots(4, 1)
+        decomposition.observed.plot(ax=axes[0], title='Наблюдаемый')
+        decomposition.trend.plot(ax=axes[1], title='Тренд')
+        decomposition.seasonal.plot(ax=axes[2], title='Сезонность')
+        decomposition.resid.plot(ax=axes[3], title='Остатки')
+        self.canvas.fig.tight_layout()
 
     def show_outliers(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
         df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
-        df = df.set_index('date').resample('D').sum().reset_index()
+        df = df.resample('D', on='date').sum().reset_index()
+        
         q1 = df['price'].quantile(0.25)
         q3 = df['price'].quantile(0.75)
         iqr = q3 - q1
         lower = q1 - 1.5 * iqr
         upper = q3 + 1.5 * iqr
         outliers = df[(df['price'] < lower) | (df['price'] > upper)]
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=df['date'], y=df['price'], mode='lines+markers', name="Продажи"))
-        fig.add_trace(go.Scatter(x=outliers['date'], y=outliers['price'], mode='markers', 
-                                 marker=dict(color='red', size=10), name="Выбросы"))
-        fig.update_layout(title="Анализ выбросов", xaxis_title="Дата", yaxis_title="Продажи")
-        return fig
+        
+        self.canvas.axes.plot(df['date'], df['price'], label='Продажи')
+        self.canvas.axes.scatter(outliers['date'], outliers['price'], color='red', label='Выбросы')
+        self.canvas.axes.legend()
+        self.canvas.axes.set_title('Анализ выбросов')
+        self.canvas.axes.xaxis.set_major_formatter(DateFormatter("%d.%m.%Y"))
 
     def show_cluster_analysis(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
-        pivot = df.pivot_table(index='Регион', columns='Продукт', values='Цена', aggfunc='sum', fill_value=0)
+        pivot = df.pivot_table(index='region', columns='product', values='price', aggfunc='sum', fill_value=0)
+        
         scaler = StandardScaler()
         X = scaler.fit_transform(pivot)
         kmeans = KMeans(n_clusters=3)
         clusters = kmeans.fit_predict(X)
+        
         pca = PCA(n_components=2)
         components = pca.fit_transform(X)
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=components[:,0], y=components[:,1],
-                                 mode='markers+text',
-                                 marker=dict(color=clusters, colorscale='Viridis', size=12),
-                                 text=list(pivot.index),
-                                 textposition="top center"))
-        fig.update_layout(title="Кластерный анализ регионов", xaxis_title="PC1", yaxis_title="PC2")
-        return fig
+        
+        self.canvas.axes.scatter(components[:,0], components[:,1], c=clusters, cmap='viridis')
+        for i, region in enumerate(pivot.index):
+            self.canvas.axes.annotate(region, (components[i,0], components[i,1]))
+        self.canvas.axes.set_title('Кластерный анализ регионов')
 
     def show_correlation_analysis(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
-        pivot = df.pivot_table(index='Дата', columns='Продукт', values='Цена', aggfunc='sum', fill_value=0)
+        pivot = df.pivot_table(index='date', columns='product', values='price', aggfunc='sum', fill_value=0)
         corr = pivot.corr()
-        fig = px.imshow(corr, text_auto=True, title="Корреляция между продуктами")
-        return fig
+        
+        sns.heatmap(corr, ax=self.canvas.axes, annot=True, cmap='coolwarm')
+        self.canvas.axes.set_title('Корреляция между продуктами')
 
     def show_arima_prophet_forecast(self, data):
         method = self.forecast_method.currentText()
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
-        df['Дата'] = pd.to_datetime(df['Дата'], format='%d.%m.%Y')
-        df = df.set_index('Дата').resample('D').sum().reset_index()
+        df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
+        df = df.resample('D', on='date').sum()
+        
         if method == "ARIMA":
-            model = ARIMA(df['Цена'], order=(1,1,1))
+            model = ARIMA(df['price'], order=(1,1,1))
             results = model.fit()
             forecast = results.predict(start=0, end=len(df)-1)
-            df['Прогноз'] = forecast
         else:
-            prophet_df = df.rename(columns={'Дата':'ds', 'Цена':'y'})
+            prophet_df = df.reset_index().rename(columns={'date':'ds', 'price':'y'})
             model = Prophet()
             model.fit(prophet_df)
             future = model.make_future_dataframe(periods=0)
             forecast = model.predict(future)
-            df['Прогноз'] = forecast['yhat']
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=df['Дата'], y=df['Цена'], mode='lines+markers', name='Фактические'))
-        fig.add_trace(go.Scatter(x=df['Дата'], y=df['Прогноз'], mode='lines', name='Прогноз'))
-        fig.update_layout(title=f"Прогноз ({method})", xaxis_title="Дата", yaxis_title="Продажи")
-        return fig
+        
+        self.canvas.axes.plot(df.index, df['price'], label='Фактические')
+        if method == "ARIMA":
+            self.canvas.axes.plot(df.index, forecast, label='Прогноз')
+        else:
+            self.canvas.axes.plot(forecast['ds'], forecast['yhat'], label='Прогноз')
+        self.canvas.axes.legend()
+        self.canvas.axes.set_title(f'Прогноз ({method})')
 
     def show_cumulative_sales(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
-        df['Дата'] = pd.to_datetime(df['Дата'], format='%d.%m.%Y')
-        df = df.sort_values('Дата')
-        df['Кумулятивные продажи'] = df['Цена'].cumsum()
-        fig = px.line(df, x='Дата', y='Кумулятивные продажи', title="Кумулятивные продажи")
-        return fig
+        df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
+        df = df.sort_values('date')
+        df['cumulative'] = df['price'].cumsum()
+        
+        self.canvas.axes.plot(df['date'], df['cumulative'])
+        self.canvas.axes.set_title('Кумулятивные продажи')
+        self.canvas.axes.xaxis.set_major_formatter(DateFormatter("%d.%m.%Y"))
 
     def show_price_distribution(self, data):
         prices = [row[5] for row in data]
-        df = pd.DataFrame({'Цена': prices})
-        fig = px.histogram(df, x='Цена', nbins=20, marginal="rug", title="Распределение цен", opacity=0.75)
-        fig.update_layout(bargap=0.1)
-        return fig
+        sns.histplot(prices, kde=True, ax=self.canvas.axes)
+        self.canvas.axes.set_title('Распределение цен')
 
     def export_chart(self):
         options = QFileDialog.Options()
         filename, _ = QFileDialog.getSaveFileName(
             self, "Сохранить график", "", 
-            "HTML Files (*.html);;All Files (*)", 
+            "PNG Files (*.png);;JPEG Files (*.jpg);;All Files (*)", 
             options=options
         )
         if filename:
-            self.plotlyWidget.page().toHtml(lambda html: open(filename, "w", encoding="utf-8").write(html))
+            self.canvas.fig.savefig(filename, dpi=300, bbox_inches='tight')
 
     def reset_filters(self):
-        self.date_start.setDate(QDate.currentDate().addMonths(-1))
-        self.date_end.setDate(QDate.currentDate())
+        self.date_start.setDateTime(QDateTime.currentDateTime().addMonths(-1))
+        self.date_end.setDateTime(QDateTime.currentDateTime())
         self.region_filter.setCurrentIndex(0)
         self.product_filter.setCurrentIndex(0)
 
@@ -515,8 +532,7 @@ class SalesAnalysisWindow(QWidget):
                 self.sales_table.setItem(row_idx, col_idx, item)
 
     def go_back(self):
-        if self.previous_window:
-            self.previous_window.show()
+        self.previous_window.show() if self.previous_window else None
         self.close()
 
 if __name__ == '__main__':

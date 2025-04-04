@@ -271,10 +271,10 @@ class SalesAnalysisWindow(QWidget):
         for row in data:
             products[row[1]] += row[5]
         df = pd.DataFrame({
-            'Продукт': list(products.keys()),
-            'Продажи': list(products.values())
+            'Product': list(products.keys()),
+            'Sales': list(products.values())
         })
-        fig = px.pie(df, values='Продажи', names='Продукт',
+        fig = px.pie(df, values='Sales', names='Product',
                      title="Распределение продаж по продуктам",
                      hole=0.3)
         return fig
@@ -284,10 +284,10 @@ class SalesAnalysisWindow(QWidget):
         for row in data:
             regions[row[3]] += row[5]
         df = pd.DataFrame({
-            'Регион': list(regions.keys()),
-            'Продажи': list(regions.values())
+            'Region': list(regions.keys()),
+            'Sales': list(regions.values())
         })
-        fig = px.bar(df, x='Регион', y='Продажи', title="Продажи по регионам")
+        fig = px.bar(df, x='Region', y='Sales', title="Продажи по регионам")
         fig.update_layout(xaxis_tickangle=-45)
         return fig
 
@@ -300,35 +300,32 @@ class SalesAnalysisWindow(QWidget):
             amounts.append(row[5])
         if not dates or not amounts:
             return go.Figure().add_annotation(text="Нет данных для отображения", x=0.5, y=0.5, showarrow=False)
-        df = pd.DataFrame({'Дата': dates, 'Продажи': amounts})
-        fig = px.line(df, x='Дата', y='Продажи', title="Динамика продаж", markers=True)
+        df = pd.DataFrame({'Date': dates, 'Sales': amounts})
+        fig = px.line(df, x='Date', y='Sales', title="Динамика продаж", markers=True)
         return fig
 
     def show_forecast(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        # Переименование столбцов на русский язык
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
-        df['Дата'] = pd.to_datetime(df['Дата'], format='%d.%m.%Y')
-        df = df.set_index('Дата').resample('D').sum().reset_index()
+        df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
+        df = df.set_index('date').resample('D').sum().reset_index()
         if len(df) < 5:
             return go.Figure().add_annotation(text="Недостаточно данных для прогноза", x=0.5, y=0.5, showarrow=False)
         method = self.forecast_method.currentText()
         if method == "Скользящее среднее":
             window_size = 3
-            df['Прогноз'] = df['Цена'].rolling(window_size).mean()
+            df['Forecast'] = df['price'].rolling(window_size).mean()
         elif method == "Линейная регрессия":
             X = np.arange(len(df)).reshape(-1, 1)
-            y = df['Цена'].values
+            y = df['price'].values
             model = LinearRegression().fit(X, y)
-            df['Прогноз'] = model.predict(X)
+            df['Forecast'] = model.predict(X)
         elif method == "Экспоненциальное сглаживание":
-            model = ExponentialSmoothing(df['Цена'], seasonal='add', seasonal_periods=7)
+            model = ExponentialSmoothing(df['price'], seasonal='add', seasonal_periods=7)
             model_fit = model.fit()
-            df['Прогноз'] = model_fit.predict(start=0, end=len(df)-1)
+            df['Forecast'] = model_fit.predict(start=0, end=len(df)-1)
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=df['Дата'], y=df['Цена'], mode='lines+markers', name='Фактические'))
-        fig.add_trace(go.Scatter(x=df['Дата'], y=df['Прогноз'], mode='lines', name='Прогноз'))
+        fig.add_trace(go.Scatter(x=df['date'], y=df['price'], mode='lines+markers', name='Фактические'))
+        fig.add_trace(go.Scatter(x=df['date'], y=df['Forecast'], mode='lines', name='Прогноз'))
         fig.update_layout(title=f"Прогноз продаж ({method})", xaxis_title="Дата", yaxis_title="Продажи")
         return fig
 
@@ -354,10 +351,8 @@ class SalesAnalysisWindow(QWidget):
 
     def show_heatmap(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
         try:
-            pivot = df.pivot_table(index='Регион', columns='Продукт', values='Цена', aggfunc='sum', fill_value=0)
+            pivot = df.pivot_table(index='region', columns='product', values='price', aggfunc='sum', fill_value=0)
             fig = px.imshow(pivot, text_auto=True, aspect="auto", title="Тепловая карта продаж")
             return fig
         except Exception as e:
@@ -420,9 +415,7 @@ class SalesAnalysisWindow(QWidget):
 
     def show_cluster_analysis(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
-        pivot = df.pivot_table(index='Регион', columns='Продукт', values='Цена', aggfunc='sum', fill_value=0)
+        pivot = df.pivot_table(index='region', columns='product', values='price', aggfunc='sum', fill_value=0)
         scaler = StandardScaler()
         X = scaler.fit_transform(pivot)
         kmeans = KMeans(n_clusters=3)
@@ -440,9 +433,7 @@ class SalesAnalysisWindow(QWidget):
 
     def show_correlation_analysis(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
-        pivot = df.pivot_table(index='Дата', columns='Продукт', values='Цена', aggfunc='sum', fill_value=0)
+        pivot = df.pivot_table(index='date', columns='product', values='price', aggfunc='sum', fill_value=0)
         corr = pivot.corr()
         fig = px.imshow(corr, text_auto=True, title="Корреляция между продуктами")
         return fig
@@ -450,42 +441,38 @@ class SalesAnalysisWindow(QWidget):
     def show_arima_prophet_forecast(self, data):
         method = self.forecast_method.currentText()
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
-        df['Дата'] = pd.to_datetime(df['Дата'], format='%d.%m.%Y')
-        df = df.set_index('Дата').resample('D').sum().reset_index()
+        df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
+        df = df.set_index('date').resample('D').sum().reset_index()
         if method == "ARIMA":
-            model = ARIMA(df['Цена'], order=(1,1,1))
+            model = ARIMA(df['price'], order=(1,1,1))
             results = model.fit()
             forecast = results.predict(start=0, end=len(df)-1)
-            df['Прогноз'] = forecast
+            df['Forecast'] = forecast
         else:
-            prophet_df = df.rename(columns={'Дата':'ds', 'Цена':'y'})
+            prophet_df = df.rename(columns={'date':'ds', 'price':'y'})
             model = Prophet()
             model.fit(prophet_df)
             future = model.make_future_dataframe(periods=0)
             forecast = model.predict(future)
-            df['Прогноз'] = forecast['yhat']
+            df['Forecast'] = forecast['yhat']
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=df['Дата'], y=df['Цена'], mode='lines+markers', name='Фактические'))
-        fig.add_trace(go.Scatter(x=df['Дата'], y=df['Прогноз'], mode='lines', name='Прогноз'))
+        fig.add_trace(go.Scatter(x=df['date'], y=df['price'], mode='lines+markers', name='Фактические'))
+        fig.add_trace(go.Scatter(x=df['date'], y=df['Forecast'], mode='lines', name='Прогноз'))
         fig.update_layout(title=f"Прогноз ({method})", xaxis_title="Дата", yaxis_title="Продажи")
         return fig
 
     def show_cumulative_sales(self, data):
         df = pd.DataFrame(data, columns=['id','product','seller','region','date','price'])
-        df.rename(columns={'product':'Продукт', 'seller':'Продавец', 'region':'Регион', 
-                           'date':'Дата', 'price':'Цена'}, inplace=True)
-        df['Дата'] = pd.to_datetime(df['Дата'], format='%d.%m.%Y')
-        df = df.sort_values('Дата')
-        df['Кумулятивные продажи'] = df['Цена'].cumsum()
-        fig = px.line(df, x='Дата', y='Кумулятивные продажи', title="Кумулятивные продажи")
+        df['date'] = pd.to_datetime(df['date'], format='%d.%m.%Y')
+        df = df.sort_values('date')
+        df['Cumulative'] = df['price'].cumsum()
+        fig = px.line(df, x='date', y='Cumulative', title="Кумулятивные продажи")
         return fig
 
     def show_price_distribution(self, data):
         prices = [row[5] for row in data]
-        df = pd.DataFrame({'Цена': prices})
-        fig = px.histogram(df, x='Цена', nbins=20, marginal="rug", title="Распределение цен", opacity=0.75)
+        df = pd.DataFrame({'Price': prices})
+        fig = px.histogram(df, x='Price', nbins=20, marginal="rug", title="Распределение цен", opacity=0.75)
         fig.update_layout(bargap=0.1)
         return fig
 
