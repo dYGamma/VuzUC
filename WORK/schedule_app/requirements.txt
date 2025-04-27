@@ -1,0 +1,8 @@
+PyQt5
+qt-material
+qtawesome
+bcrypt
+sqlalchemy
+plyer
+reportlab
+openpyxl

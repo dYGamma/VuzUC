@@ -1,0 +1,27 @@
+/* Общие стили */
+QMainWindow {
+    background-color: #f0f0f0;
+}
+QWidget {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 14px;
+}
+/* Таблицы */
+QTableWidget {
+    gridline-color: #ccc;
+    selection-background-color: #87cefa;
+}
+/* Кнопки */
+QPushButton {
+    border: 1px solid #888;
+    border-radius: 4px;
+    padding: 6px;
+    background-color: #e0e0e0;
+}
+QPushButton:hover {
+    background-color: #d0d0d0;
+}
+/* Диалоги */
+QDialog {
+    background-color: #ffffff;
+}
