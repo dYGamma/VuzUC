@@ -1,5 +1,4 @@
 # main_window.py
-
 import logging
 from PyQt5.QtWidgets import QMainWindow, QTabWidget
 from schedule_widget import ScheduleWidget
@@ -30,11 +29,10 @@ class MainWindow(QMainWindow):
             tabs.addTab(HomeworkWidget(user), "Домашние задания")
         elif user.role == RoleEnum.parent:
             tabs.addTab(ScheduleWidget(user), "Расписание")
-            tabs.addTab(HomeworkWidget(user), "Домашние задания")
             tabs.addTab(ReportWidget(user),   "Отчёты")
         elif user.role == RoleEnum.admin:
             tabs.addTab(ScheduleWidget(user), "Расписание")
-            tabs.addTab(HomeworkWidget(user), "Домашние задания")
+            tabs.addTab(HomeworkWidget(user),"Домашние задания")
             tabs.addTab(ReportWidget(user),   "Отчёты")
             tabs.addTab(UserManagementWidget(), "Пользователи")
 
