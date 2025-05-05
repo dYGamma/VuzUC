@@ -1,3 +1,5 @@
+# gui/student_page.py
+
 from PyQt5 import QtWidgets, QtCore
 from datetime import timedelta
 import controllers
@@ -11,16 +13,19 @@ class StudentPage(QtWidgets.QWidget):
         self.tabs = QtWidgets.QTabWidget()
         layout.addWidget(self.tabs)
 
-        # Вкладка поиска и заказа
+        # Вкладки
         self.tab_search = QtWidgets.QWidget()
         self._init_search_tab()
         self.tabs.addTab(self.tab_search, "Поиск книг")
 
-        # Вкладка "Мои заказы"
         self.tab_my = QtWidgets.QWidget()
         self._init_my_tab()
         self.tabs.addTab(self.tab_my, "Мои заказы")
 
+        # При смене вкладки — обновляем содержимое
+        self.tabs.currentChanged.connect(self._on_tab_changed)
+
+        # Первичная загрузка
         self.on_search()
         self.reload_my_orders()
 
@@ -57,19 +62,28 @@ class StudentPage(QtWidgets.QWidget):
 
     def _translate_status(self, status: str) -> str:
         translations = {
-            "pending": "В ожидании подтверждения",
-            "issued": "Выдана",
-            "overdue": "Просрочена",
-            "returned": "Возвращена",
+            "pending":   "В ожидании подтверждения",
+            "issued":    "Выдана",
+            "overdue":   "Просрочена",
+            "returned":  "Возвращена",
             "cancelled": "Отменена",
         }
         return translations.get(status, status)
+
+    def _on_tab_changed(self, index: int):
+        # Если открыли вкладку Поиск — обновляем список книг
+        if self.tabs.widget(index) is self.tab_search:
+            self.on_search()
+        # Если вкладку «Мои заказы»
+        elif self.tabs.widget(index) is self.tab_my:
+            self.reload_my_orders()
 
     def on_search(self):
         term = self.le_search.text().strip().lower()
         books = controllers.find_books()
         if term:
             books = [b for b in books if term in b.title.lower()]
+
         self.table_search.setRowCount(0)
         for b in books:
             i = self.table_search.rowCount()
@@ -88,6 +102,7 @@ class StudentPage(QtWidgets.QWidget):
             QtWidgets.QMessageBox.information(
                 self, "Успех", "Книга успешно заказана! Ждите подтверждения."
             )
+            # После заказа сразу обновим обе таблицы
             self.on_search()
             self.reload_my_orders()
         except Exception as e:
@@ -99,17 +114,17 @@ class StudentPage(QtWidgets.QWidget):
         for o in orders:
             i = self.table_my.rowCount()
             self.table_my.insertRow(i)
-            due = ""
-            if o.issue_date:
-                due_dt = o.issue_date + timedelta(days=14)
-                due = due_dt.strftime("%Y-%m-%d")
+
+            issue_str = o.issue_date.strftime("%Y-%m-%d") if o.issue_date else ""
+            due_str   = o.due_date.strftime("%Y-%m-%d")   if getattr(o, 'due_date', None) else ""
+            status_str = self._translate_status(o.status)
+
             self.table_my.setItem(i, 0, QtWidgets.QTableWidgetItem(str(o.id)))
             self.table_my.setItem(i, 1, QtWidgets.QTableWidgetItem(o.book.title))
-            self.table_my.setItem(i, 2, QtWidgets.QTableWidgetItem(
-                o.issue_date.strftime("%Y-%m-%d") if o.issue_date else ""
-            ))
-            self.table_my.setItem(i, 3, QtWidgets.QTableWidgetItem(due))
-            self.table_my.setItem(i, 4, QtWidgets.QTableWidgetItem(self._translate_status(o.status)))
+            self.table_my.setItem(i, 2, QtWidgets.QTableWidgetItem(issue_str))
+            self.table_my.setItem(i, 3, QtWidgets.QTableWidgetItem(due_str))
+            self.table_my.setItem(i, 4, QtWidgets.QTableWidgetItem(status_str))
+
             btn = QtWidgets.QPushButton("Вернуть")
             can_return = o.issue_date is not None and o.status != "returned"
             btn.setEnabled(can_return)
@@ -119,9 +134,20 @@ class StudentPage(QtWidgets.QWidget):
     def _return(self, order_id: int):
         try:
             controllers.return_order(order_id)
-            QtWidgets.QMessageBox.information(self, "Успех", "Книга помечена как возвращённая.")
+            QtWidgets.QMessageBox.information(
+                self, "Успех", "Книга помечена как возвращённая."
+            )
         except Exception as e:
             QtWidgets.QMessageBox.warning(self, "Ошибка при возврате", str(e))
         finally:
+            # и тут тоже сразу обновляем
             self.reload_my_orders()
-            
+            # а если студент вернулся на вкладку «Поиск», чтобы увидеть остаток —
+            # можно раскомментировать:
+            # self.on_search()
+
+    # Также гарантируем обновление при каждом показе:
+    def showEvent(self, event):
+        super().showEvent(event)
+        current = self.tabs.currentIndex()
+        self._on_tab_changed(current)

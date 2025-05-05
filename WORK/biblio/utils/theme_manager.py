@@ -1,5 +1,3 @@
-# utils/theme_manager.py
-
 from qt_material import apply_stylesheet
 from PyQt5.QtWidgets import QApplication
 import qtawesome as qta
@@ -33,12 +31,11 @@ def init_theme():
     global current_theme
     cfg = ConfigParser()
     cfg.read(os.path.join('config', 'config.ini'))
-    # поправка: передаём fallback как именованный параметр
     theme_name = cfg.get('app', 'theme', fallback='dark_teal')
     current_theme = theme_name
     _apply(theme_name)
 
-def toggle_theme(theme_btn, title_lbl, switch_btn=None):
+def toggle_theme(theme_btn, title_lbl=None, switch_btn=None):
     """Переключает тему и обновляет UI."""
     global current_theme
     new = 'light_cyan_500' if current_theme == 'dark_teal' else 'dark_teal'
@@ -53,10 +50,6 @@ def _apply(name):
     _append_input_styles()
 
 def _append_input_styles():
-    """
-    Добавляем QSS для полей ввода к уже установленному стилю,
-    не перезаписывая полную тему.
-    """
     app = QApplication.instance()
     p = theme_params[current_theme]
     qss = f"""
@@ -84,17 +77,25 @@ def _append_input_styles():
     """
     app.setStyleSheet(app.styleSheet() + qss)
 
-def update_theme_ui(theme_btn, title_lbl, switch_btn=None):
-    """Обновляет иконки и стили под текущую тему."""
+def update_theme_ui(theme_btn, title_lbl=None, switch_btn=None):
+    """
+    Обновляет иконки и стили под текущую тему.
+    title_lbl — QLabel заголовка (может быть None).
+    switch_btn — кнопка выхода/смены (может быть None).
+    """
     p = theme_params[current_theme]
+    # иконка темы
     theme_btn.setIcon(qta.icon(p['icon_name'], color=p['text_color']))
-    title_lbl.setStyleSheet(f"""
-        color: {p['text_color']};
-        font-size: 16px;
-        font-weight: bold;
-        border: 2px solid {p['text_color']};
-        padding: 8px;
-        border-radius: 8px;
-    """)
-    if switch_btn:
+    # стилизация заголовка, если QLabel передан
+    if title_lbl is not None:
+        title_lbl.setStyleSheet(f"""
+            color: {p['text_color']};
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid {p['text_color']};
+            padding: 8px;
+            border-radius: 8px;
+        """)
+    # иконка кнопки выхода/смены
+    if switch_btn is not None:
         switch_btn.setIcon(qta.icon('fa5s.sign-out-alt', color=p['text_color']))

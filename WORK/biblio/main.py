@@ -19,7 +19,8 @@ def main():
     if login.exec_() != LoginDialog.Accepted:
         sys.exit(0)
     win = MainWindow(login.user, lambda: LoginDialog())
-    win.show()
+    # win.show()
+    win.showFullScreen()
     sys.exit(app.exec_())
 
 if __name__=='__main__':

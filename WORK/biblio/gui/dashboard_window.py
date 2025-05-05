@@ -1,3 +1,5 @@
+# gui/dashboard_window.py
+_app_context = {}
 from PyQt5 import QtWidgets, QtCore
 from utils.theme_manager import toggle_theme, update_theme_ui
 from gui.book_manager_page import BookManagerPage
@@ -16,110 +18,102 @@ class MainWindow(QtWidgets.QMainWindow):
         self.user = user
         self.make_login_dialog = make_login_dialog
 
-        # Окно
+        # ---
         self.setWindowTitle(f"Школьная библиотека — {user.role.capitalize()}")
-        self.resize(1024, 768)
+        self.resize(1920, 1080)
 
-        # Навигатор слева
-        self.nav_list = QtWidgets.QListWidget()
-        self.nav_list.setFixedWidth(180)
-        self.stack = QtWidgets.QStackedWidget()
-
-        if user.role == 'student':
-            # Студент: поиск и мои заказы — внутри StudentPage
-            self.nav_list.addItem("🔍 Поиск и Заказы")
-            self.page_student = StudentPage(user.id)
-            self.stack.addWidget(self.page_student)
-        else:
-            # Общие разделы для librarian/admin
-            self.nav_list.addItem("📚 Каталог книг")
-            self.page_books   = BookManagerPage()
-            self.stack.addWidget(self.page_books)
-
-            self.nav_list.addItem("🔖 Заказы")
-            self.page_orders  = OrderManagerPage()
-            self.stack.addWidget(self.page_orders)
-
-            self.nav_list.addItem("📑 Отчёты")
-            self.page_reports = ReportPage()
-            self.stack.addWidget(self.page_reports)
-            # НУЖНА ПРАВКА!!!
-            if user.role == 'librarian':
-                self.nav_list.addItem("👥 Пользователи")
-                self.page_users = UserManagerPage()
-                self.stack.addWidget(self.page_users)
-
-            if user.role == 'admin':
-                self.nav_list.addItem("🛠 Библиотекари")
-                self.page_libs = LibrarianManagerPage()
-                self.stack.addWidget(self.page_libs)
-
-            # при изменении каталога обновлять заказы
-            self.page_books.data_changed.connect(self.page_orders.reload)
-
-        self.nav_list.currentRowChanged.connect(self.on_nav_changed)
-
-        # Верхний тулбар
+        # Верхний бар
         top_bar = QtWidgets.QWidget()
         hl = QtWidgets.QHBoxLayout(top_bar)
         hl.setContentsMargins(8,8,8,4)
         hl.setSpacing(4)
 
-        lbl_title = QtWidgets.QLabel("Панель управления библиотекой")
-        lbl_title.setAlignment(QtCore.Qt.AlignCenter)
+        # Навигация
+        self.tab_bar = QtWidgets.QTabBar()
+        self.tab_bar.setExpanding(True)
+        self.tab_bar.setDrawBase(False)
+        self.stack = QtWidgets.QStackedWidget()
 
+        if user.role == 'student':
+            # Студент
+            self.tab_bar.addTab("🔍 Поиск и Заказы")
+            self.page_student = StudentPage(user.id)
+            self.stack.addWidget(self.page_student)
+
+        else:
+            # 1. Каталог книг
+            self.tab_bar.addTab("📚 Каталог книг")
+            self.page_books = BookManagerPage()
+            self.stack.addWidget(self.page_books)
+
+            # 2. Заказы
+            self.tab_bar.addTab("🔖 Заказы")
+            self.page_orders = OrderManagerPage()
+            self.stack.addWidget(self.page_orders)
+
+            # — нажатие кнопок в заказах обновляет каталог
+            self.page_orders.reload_request.connect(self.page_books.reload)
+
+            # 3. Отчёты
+            self.tab_bar.addTab("📑 Отчёты")
+            self.page_reports = ReportPage()
+            self.stack.addWidget(self.page_reports)
+
+            # 4. Пользователи / библиотекари
+            if user.role == 'librarian':
+                self.tab_bar.addTab("👥 Пользователи")
+                self.page_users = UserManagerPage()
+                self.stack.addWidget(self.page_users)
+            if user.role == 'admin':
+                self.tab_bar.addTab("🛠 Библиотекари")
+                self.page_libs = LibrarianManagerPage()
+                self.stack.addWidget(self.page_libs)
+
+        # Переключение табов
+        self.tab_bar.currentChanged.connect(self.on_nav_changed)
+        hl.addWidget(self.tab_bar, stretch=1)
+
+        # Кнопки справа
         btn_switch = QtWidgets.QPushButton()
         btn_switch.setFixedSize(32,32)
         btn_switch.clicked.connect(self.on_switch_account)
+        hl.addWidget(btn_switch, QtCore.Qt.AlignRight)
 
         btn_theme = QtWidgets.QPushButton()
         btn_theme.setFixedSize(32,32)
-        btn_theme.clicked.connect(lambda: toggle_theme(btn_theme, lbl_title, btn_switch))
+        btn_theme.clicked.connect(lambda: toggle_theme(btn_theme, None, btn_switch))
+        hl.addWidget(btn_theme, QtCore.Qt.AlignRight)
 
-        update_theme_ui(btn_theme, lbl_title, btn_switch)
+        update_theme_ui(btn_theme, None, btn_switch)
 
-        hl.addStretch()
-        hl.addWidget(lbl_title, stretch=1)
-        hl.addStretch()
-
-        right_vbox = QtWidgets.QVBoxLayout()
-        right_vbox.setSpacing(4)
-        right_vbox.addWidget(btn_switch, alignment=QtCore.Qt.AlignRight)
-        right_vbox.addWidget(btn_theme,  alignment=QtCore.Qt.AlignRight)
-        right_vbox.addStretch()
-
-        rc = QtWidgets.QWidget()
-        rc.setLayout(right_vbox)
-        hl.addWidget(rc, 0, QtCore.Qt.AlignRight)
-
+        # Центральный виджет
         central = QtWidgets.QWidget()
         vbox = QtWidgets.QVBoxLayout(central)
         vbox.setContentsMargins(0,0,0,0)
         vbox.setSpacing(0)
         vbox.addWidget(top_bar)
-
-        splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
-        splitter.addWidget(self.nav_list)
-        splitter.addWidget(self.stack)
-        splitter.setStretchFactor(1,1)
-        vbox.addWidget(splitter)
-
+        vbox.addWidget(self.stack)
         self.setCentralWidget(central)
 
-        # Показываем первую вкладку
-        self.nav_list.setCurrentRow(0)
+        # Показать первый таб
+        self.tab_bar.setCurrentIndex(0)
+        self.stack.setCurrentIndex(0)
+
         logger.info("MainWindow initialized for %s", user.id)
 
     def on_nav_changed(self, index: int):
         self.stack.setCurrentIndex(index)
 
     def on_switch_account(self):
-        self.hide()
         dlg = self.make_login_dialog()
-        if dlg.exec_() == QtWidgets.QDialog.Accepted:
+        if dlg.exec_():
             new_user = dlg.user
-            logger.info("Switching to %s", new_user.id)
-            win = MainWindow(new_user, self.make_login_dialog)
-            win.show()
-        else:
-            self.show()
+            from gui.dashboard_window import MainWindow
+
+            # создаём и сохраняем ссылку на новое окно
+            new_win = MainWindow(new_user, self.make_login_dialog)
+            _app_context["main_window"] = new_win  # сохранили, чтобы не удалился
+
+            # new_win.show()
+            new_win.showFullScreen()
+            self.close()

@@ -1,7 +1,9 @@
+# controllers.py
+
 import enum
 import logging
 from types import SimpleNamespace
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from database import SessionLocal
@@ -19,7 +21,6 @@ def _to_ns(obj, fields):
     return SimpleNamespace(**data)
 
 # --- Authentication ---
-
 def authenticate(user_id: str, password: str):
     db = SessionLocal()
     try:
@@ -30,7 +31,7 @@ def authenticate(user_id: str, password: str):
         db.close()
     return None
 
-def get_user(user_id):
+def get_user(user_id: str):
     db = SessionLocal()
     try:
         u = db.query(User).filter(User.id == user_id).one()
@@ -44,8 +45,7 @@ def get_user(user_id):
         db.close()
 
 # --- User CRUD ---
-
-def create_user(id, name, role, clazz=None, contact=None, password=None):
+def create_user(id: str, name: str, role: str, clazz: str=None, contact: str=None, password: str=None):
     db = SessionLocal()
     try:
         u = User(
@@ -64,55 +64,57 @@ def create_user(id, name, role, clazz=None, contact=None, password=None):
     finally:
         db.close()
 
-def update_user(id, **data):
+def update_user(id: str, **data):
     db = SessionLocal()
     try:
-        u = db.query(User).get(id)
-        for k, v in data.items():
+        u = db.get(User, id)
+        for k,v in data.items():
             if k == 'password':
                 setattr(u, 'password_hash', User.hash_password(v))
             else:
                 setattr(u, k, v)
         db.commit()
-    except Exception:
+    except:
         db.rollback()
         raise
     finally:
         db.close()
 
-def delete_user(id):
+def delete_user(id: str):
     db = SessionLocal()
     try:
         db.query(User).filter(User.id == id).delete()
         db.commit()
-    except Exception:
+    except:
         db.rollback()
         raise
     finally:
         db.close()
 
-def list_users(role=None):
+def list_users(role: str=None):
     db = SessionLocal()
     try:
         q = db.query(User)
         if role:
             q = q.filter(User.role == RoleEnum(role))
-        res = []
-        for u in q.all():
-            res.append(SimpleNamespace(
-                id=u.id, name=u.name, role=u.role.value,
-                clazz=u.clazz, contact=u.contact
-            ))
-        return res
+        return [
+            SimpleNamespace(
+                id=u.id,
+                name=u.name,
+                role=u.role.value,
+                clazz=u.clazz,
+                contact=u.contact
+            )
+            for u in q.all()
+        ]
     finally:
         db.close()
 
-def get_user_obj(id):
+def get_user_obj(id: str):
     return get_user(id)
 
 # --- Book CRUD ---
-
-def create_book(data):
+def create_book(data: dict):
     db = SessionLocal()
     try:
         b = Book(**data)
@@ -121,17 +123,17 @@ def create_book(data):
     finally:
         db.close()
 
-def update_book(book_id, data):
+def update_book(book_id: int, data: dict):
     db = SessionLocal()
     try:
-        b = db.query(Book).get(book_id)
-        for k, v in data.items():
+        b = db.get(Book, book_id)
+        for k,v in data.items():
             setattr(b, k, v)
         db.commit()
     finally:
         db.close()
 
-def delete_book(book_id):
+def delete_book(book_id: int):
     db = SessionLocal()
     try:
         db.query(Book).filter(Book.id == book_id).delete()
@@ -146,30 +148,40 @@ def find_books():
     finally:
         db.close()
 
-def get_book(book_id):
+def get_book(book_id: int):
     db = SessionLocal()
     try:
-        b = db.query(Book).get(book_id)
-        return _to_ns(b, [
-            'id', 'isbn', 'title', 'author',
-            'genre', 'year', 'copies', 'description'
-        ])
+        b = db.get(Book, book_id)
+        return _to_ns(b, ['id','isbn','title','author','genre','year','copies','description'])
     finally:
         db.close()
 
 # --- Orders ---
-
 def create_order(user_id: str, book_id: int):
+    """
+    Теперь сохраняем только дату заявки (без времени),
+    чтобы в любом часовом поясе она совпадала с днём заказа.
+    """
     db = SessionLocal()
     try:
+        book = db.get(Book, book_id)
+        if not book or book.copies < 1:
+            raise Exception("Нет доступных копий для заказа.")
         cnt = db.query(Order).filter(
-            Order.user_id == user_id,
+            Order.user_id==user_id,
             Order.status.in_([StatusEnum.pending, StatusEnum.confirmed, StatusEnum.issued])
         ).count()
         if cnt >= 3:
             raise Exception("Достигнут лимит одновременно взятых книг (3).")
-        o = Order(user_id=user_id, book_id=book_id)
+        # создаём заказ и резервируем копию
+        o = Order(
+            user_id=user_id,
+            book_id=book_id,
+            request_date=date.today(),   # Здесь фиксируем лишь дату
+            status=StatusEnum.pending
+        )
         db.add(o)
+        book.copies -= 1
         db.commit()
     except IntegrityError as e:
         db.rollback()
@@ -181,20 +193,18 @@ def create_order(user_id: str, book_id: int):
 def list_orders_for_user(user_id: str):
     db = SessionLocal()
     try:
-        orders = (
-            db.query(Order)
-              .options(joinedload(Order.book))
-              .filter(Order.user_id == user_id)
-              .all()
-        )
+        orders = db.query(Order).options(joinedload(Order.book))\
+            .filter(Order.user_id==user_id).all()
         out = []
         for o in orders:
             ns = _to_ns(o, [
-                'id', 'user_id', 'book_id', 'status',
-                'request_date', 'confirm_date', 'issue_date', 'return_date', 'due_date'
+                'id','user_id','book_id','status',
+                'request_date','confirm_date','issue_date','return_date','due_date'
             ])
             ns.book = SimpleNamespace(
-                id=o.book.id, title=o.book.title, author=o.book.author
+                id=o.book.id if o.book else None,
+                title=o.book.title if o.book else "[удалена]",
+                author=o.book.author if o.book else ""
             )
             out.append(ns)
         return out
@@ -208,11 +218,13 @@ def list_all_orders():
         result = []
         for o in orders:
             ns = _to_ns(o, [
-                'id', 'user_id', 'book_id', 'status',
-                'request_date', 'confirm_date', 'issue_date', 'return_date', 'due_date'
+                'id','user_id','book_id','status',
+                'request_date','confirm_date','issue_date','return_date','due_date'
             ])
             ns.book = SimpleNamespace(
-                id=o.book.id, title=o.book.title, author=o.book.author
+                id=o.book.id if o.book else None,
+                title=o.book.title if o.book else "[удалена]",
+                author=o.book.author if o.book else ""
             )
             result.append(ns)
         return result
@@ -223,10 +235,10 @@ def return_order(order_id: int):
     process_order(order_id, 'returned')
 
 def advance_order(order_id: int):
-    mapping = {'pending': 'confirmed', 'confirmed': 'issued', 'issued': 'returned'}
+    mapping = {'pending':'confirmed','confirmed':'issued','issued':'returned'}
     db = SessionLocal()
     try:
-        o = db.query(Order).get(order_id)
+        o = db.get(Order, order_id)
         if o and o.status.value in mapping:
             process_order(order_id, mapping[o.status.value])
     finally:
@@ -235,50 +247,67 @@ def advance_order(order_id: int):
 def process_order(order_id: int, new_status: str):
     db = SessionLocal()
     try:
-        o = db.query(Order).get(order_id)
+        o = db.get(Order, order_id)
         now = datetime.utcnow()
         o.status = StatusEnum(new_status)
-
         if new_status == 'confirmed':
             o.confirm_date = now
-            notification.notify(title="Бронь подтверждена", message=f"Ваш заказ #{o.id} подтверждён")
+            notification.notify(title="Бронь подтверждена",
+                                message=f"Ваш заказ #{o.id} подтверждён")
         elif new_status == 'issued':
             o.issue_date = now
-            change_copies(o.book_id, -1)
-            notification.notify(title="Книга выдана", message=f"Вам выдана «{o.book.title}»")
+            notification.notify(title="Книга выдана",
+                                message=f"Вам выдана «{o.book.title}»")
         elif new_status == 'returned':
             o.return_date = now
-            change_copies(o.book_id, +1)
-            notification.notify(title="Книга возвращена", message=f"Вы вернули «{o.book.title}»")
+            _change_copies(db, o.book_id, +1)
+            notification.notify(title="Книга возвращена",
+                                message=f"Вы вернули «{o.book.title}»")
         elif new_status == 'overdue':
-            notification.notify(title="Просрочка", message=f"Заказ #{o.id} просрочен")
-
+            notification.notify(title="Просрочка",
+                                message=f"Заказ #{o.id} просрочен")
         db.commit()
     finally:
         db.close()
 
-def change_copies(book_id: int, delta: int):
-    db = SessionLocal()
-    try:
-        b = db.query(Book).get(book_id)
-        b.copies += delta
-        db.commit()
-    finally:
-        db.close()
+def _change_copies(db, book_id: int, delta: int):
+    b = db.get(Book, book_id)
+    b.copies += delta
 
 def set_due_date(order_id: int, due_date: datetime):
     db = SessionLocal()
     try:
-        o = db.query(Order).get(order_id)
-        if o.status not in [StatusEnum.issued, StatusEnum.confirmed]:
-            raise Exception("Можно задать срок возврата только для подтверждённых или выданных заказов.")
+        o = db.get(Order, order_id)
+        if o.status not in [StatusEnum.confirmed, StatusEnum.issued]:
+            raise Exception("Срок можно задать только для подтверждённых или выданных заказов.")
         o.due_date = due_date
         db.commit()
     finally:
         db.close()
 
-# --- Reports ---
+def set_confirm_date(order_id: int, confirm_date: datetime):
+    db = SessionLocal()
+    try:
+        o = db.get(Order, order_id)
+        if not o:
+            raise Exception("Заказ не найден.")
+        o.confirm_date = confirm_date
+        db.commit()
+    finally:
+        db.close()
 
+def set_issue_date(order_id: int, issue_date: datetime):
+    db = SessionLocal()
+    try:
+        o = db.get(Order, order_id)
+        if not o:
+            raise Exception("Заказ не найден.")
+        o.issue_date = issue_date
+        db.commit()
+    finally:
+        db.close()
+
+# --- Reports ---
 def export_low_stock_pdf(path: str):
     db = SessionLocal()
     try:
@@ -292,27 +321,5 @@ def export_overdue_excel(path: str):
     try:
         ov = db.query(Order).filter(Order.status == StatusEnum.overdue).all()
         reports.generate_overdue_excel(ov, path)
-    finally:
-        db.close()
-
-def set_confirm_date(order_id: int, confirm_date: datetime):
-    db = SessionLocal()
-    try:
-        o = db.query(Order).get(order_id)
-        if not o:
-            raise Exception("Заказ не найден.")
-        o.confirm_date = confirm_date
-        db.commit()
-    finally:
-        db.close()
-
-def set_issue_date(order_id: int, issue_date: datetime):
-    db = SessionLocal()
-    try:
-        o = db.query(Order).get(order_id)
-        if not o:
-            raise Exception("Заказ не найден.")
-        o.issue_date = issue_date
-        db.commit()
     finally:
         db.close()
