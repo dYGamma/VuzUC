@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"from docx import Document; d=Document\\('mag.docx'\\); [print\\(f'[{i}]', p.text\\) for i,p in enumerate\\(d.paragraphs\\)]\")",
+      "Bash(pip install *)",
+      "Bash(python -c 'from docx import Document; d=Document\\('\\\\''mag.docx'\\\\''\\); *)",
+      "Bash(python -c ' *)",
+      "Read(//c/VuzUC/**)",
+      "Bash(where pandoc *)",
+      "Bash(pandoc --version)",
+      "Bash(python build_moreva_docx.py)",
+      "Bash(python -c \"import markdown; print\\(markdown.__version__\\)\")",
+      "Bash(python -c \"import mistune; print\\(mistune.__version__\\)\")",
+      "Bash(python build_dissertation_docx.py)"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /tmp)",
+      "Bash(unzip -o \"/mnt/c/Users/dimas/OneDrive/Рабочий стол/solid/solid_4 1.docx\" -d bobyshka_doc)",
+      "PowerShell(Test-Path *)",
+      "PowerShell(Copy-Item *)"
+    ]
+  }
+}
