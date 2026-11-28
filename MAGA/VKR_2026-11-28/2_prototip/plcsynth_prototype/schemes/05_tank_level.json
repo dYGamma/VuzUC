@@ -1,0 +1,21 @@
+{
+  "scheme": "tank_level",
+  "title": "Резервуар: уровень, температура, сигнализаторы уровня",
+  "plc": {"id": "PLC1", "cycle_ms": 50},
+  "modules": [
+    {"id": "DI1", "kind": "DI", "channels": 8, "base": 0},
+    {"id": "AI1", "kind": "AI", "channels": 4, "base": 0, "signal": "4-20mA", "raw_lo": 0, "raw_hi": 27648}
+  ],
+  "devices": [
+    {"id": "LT1", "class": "AnalogSensor", "tag": "LT1", "signal": "4-20mA", "range_lo": 0.0, "range_hi": 5.0, "unit": "m"},
+    {"id": "TT1", "class": "AnalogSensor", "tag": "TT1", "signal": "4-20mA", "range_lo": -50.0, "range_hi": 150.0, "unit": "C"},
+    {"id": "LSH1", "class": "LevelSwitch", "tag": "LSH1", "contact": "NO"},
+    {"id": "LSL1", "class": "LevelSwitch", "tag": "LSL1", "filter_ms": 500}
+  ],
+  "connections": [
+    {"from": "LT1", "to": "AI1.0", "type": "wire"},
+    {"from": "TT1", "to": "AI1.1", "type": "wire"},
+    {"from": "LSH1", "to": "DI1.0", "type": "wire"},
+    {"from": "LSL1", "to": "DI1.1", "type": "wire", "contact": "NC"}
+  ]
+}

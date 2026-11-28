@@ -1,0 +1,32 @@
+{
+  "scheme": "star_delta",
+  "title": "Пуск «звезда — треугольник» и датчик давления",
+  "plc": {"id": "PLC1", "cycle_ms": 10},
+  "modules": [
+    {"id": "DI1", "kind": "DI", "channels": 8, "base": 0},
+    {"id": "DO1", "kind": "DO", "channels": 8, "base": 0},
+    {"id": "AI1", "kind": "AI", "channels": 4, "base": 0, "signal": "4-20mA", "raw_lo": 0, "raw_hi": 27648}
+  ],
+  "devices": [
+    {"id": "KM1", "class": "Contactor", "tag": "KM1", "role": "line"},
+    {"id": "KM2", "class": "Contactor", "tag": "KM2", "role": "star"},
+    {"id": "KM3", "class": "Contactor", "tag": "KM3", "role": "delta"},
+    {"id": "KK1", "class": "ThermalRelay", "tag": "KK1"},
+    {"id": "M1", "class": "Motor", "tag": "M1", "power_kw": 30.0},
+    {"id": "PT1", "class": "AnalogSensor", "tag": "PT1", "signal": "4-20mA", "range_lo": 0.0, "range_hi": 10.0, "unit": "bar"}
+  ],
+  "connections": [
+    {"from": "DO1.0", "to": "KM1", "type": "wire"},
+    {"from": "DO1.1", "to": "KM2", "type": "wire"},
+    {"from": "DO1.2", "to": "KM3", "type": "wire"},
+    {"from": "KM1", "to": "KK1", "type": "drives"},
+    {"from": "KK1", "to": "M1", "type": "drives"},
+    {"from": "KM2", "to": "M1", "type": "drives"},
+    {"from": "KM3", "to": "M1", "type": "drives"},
+    {"from": "KM1", "to": "DI1.0", "type": "feedback", "contact": "NO"},
+    {"from": "KM2", "to": "DI1.1", "type": "feedback", "contact": "NO"},
+    {"from": "KM3", "to": "DI1.2", "type": "feedback", "contact": "NO"},
+    {"from": "KK1", "to": "DI1.3", "type": "feedback", "contact": "NC"},
+    {"from": "PT1", "to": "AI1.0", "type": "wire"}
+  ]
+}

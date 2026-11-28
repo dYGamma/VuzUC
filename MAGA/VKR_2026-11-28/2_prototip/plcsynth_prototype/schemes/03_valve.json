@@ -1,0 +1,23 @@
+{
+  "scheme": "valve",
+  "title": "Отсечной клапан с концевыми выключателями",
+  "plc": {"id": "PLC1", "cycle_ms": 20},
+  "modules": [
+    {"id": "DI1", "kind": "DI", "channels": 8, "base": 0},
+    {"id": "DO1", "kind": "DO", "channels": 8, "base": 0}
+  ],
+  "devices": [
+    {"id": "Y1", "class": "Solenoid", "tag": "YV1"},
+    {"id": "XV1", "class": "Valve", "tag": "XV1", "travel_time_ms": 8000},
+    {"id": "ZSO1", "class": "LimitSwitch", "tag": "ZSO1", "position": "open", "contact": "NO"},
+    {"id": "ZSC1", "class": "LimitSwitch", "tag": "ZSC1", "position": "closed"}
+  ],
+  "connections": [
+    {"from": "DO1.0", "to": "Y1", "type": "wire"},
+    {"from": "Y1", "to": "XV1", "type": "drives"},
+    {"from": "XV1", "to": "ZSO1", "type": "drives"},
+    {"from": "XV1", "to": "ZSC1", "type": "drives"},
+    {"from": "ZSO1", "to": "DI1.0", "type": "wire"},
+    {"from": "ZSC1", "to": "DI1.1", "type": "wire", "contact": "NC"}
+  ]
+}

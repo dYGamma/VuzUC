@@ -1,0 +1,20 @@
+{
+  "scheme": "fan_vfd",
+  "title": "Вентилятор с частотным преобразователем",
+  "plc": {"id": "PLC1", "cycle_ms": 20},
+  "modules": [
+    {"id": "DI1", "kind": "DI", "channels": 8, "base": 0},
+    {"id": "DO1", "kind": "DO", "channels": 8, "base": 0},
+    {"id": "AO1", "kind": "AO", "channels": 2, "base": 0, "signal": "0-10V", "raw_lo": 0, "raw_hi": 27648}
+  ],
+  "devices": [
+    {"id": "U1", "class": "VFD", "tag": "UZ1", "freq_min": 10.0, "freq_max": 50.0},
+    {"id": "M1", "class": "Motor", "tag": "M1", "power_kw": 4.0}
+  ],
+  "connections": [
+    {"from": "DO1.0", "to": "U1", "type": "wire"},
+    {"from": "AO1.0", "to": "U1", "type": "wire"},
+    {"from": "U1", "to": "M1", "type": "drives"},
+    {"from": "U1", "to": "DI1.0", "type": "feedback", "contact": "NC"}
+  ]
+}

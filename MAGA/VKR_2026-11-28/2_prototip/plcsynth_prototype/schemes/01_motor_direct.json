@@ -1,0 +1,29 @@
+{
+  "scheme": "motor_direct",
+  "title": "Двигатель прямого пуска",
+  "plc": {"id": "PLC1", "model": "generic", "cycle_ms": 10},
+  "modules": [
+    {"id": "DI1", "kind": "DI", "channels": 8, "base": 0, "signal": "24VDC"},
+    {"id": "DO1", "kind": "DO", "channels": 8, "base": 0, "signal": "24VDC"}
+  ],
+  "devices": [
+    {"id": "K1", "class": "Relay", "tag": "K1"},
+    {"id": "KM1", "class": "Contactor", "tag": "KM1", "feedback_timeout_ms": 2000},
+    {"id": "KK1", "class": "ThermalRelay", "tag": "KK1"},
+    {"id": "M1", "class": "Motor", "tag": "M1", "power_kw": 5.5},
+    {"id": "X1:1", "class": "Terminal"},
+    {"id": "X1:2", "class": "Terminal"},
+    {"id": "X1:3", "class": "Terminal"}
+  ],
+  "connections": [
+    {"from": "DO1.0", "to": "X1:1", "type": "wire"},
+    {"from": "X1:1", "to": "K1", "type": "wire"},
+    {"from": "K1", "to": "KM1", "type": "drives"},
+    {"from": "KM1", "to": "KK1", "type": "drives"},
+    {"from": "KK1", "to": "M1", "type": "drives"},
+    {"from": "KM1", "to": "X1:2", "type": "feedback", "contact": "NO"},
+    {"from": "X1:2", "to": "DI1.0", "type": "wire"},
+    {"from": "KK1", "to": "X1:3", "type": "feedback", "contact": "NC"},
+    {"from": "X1:3", "to": "DI1.1", "type": "wire"}
+  ]
+}

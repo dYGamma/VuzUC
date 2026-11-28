@@ -1,0 +1,27 @@
+{
+  "scheme": "reversing_motor",
+  "title": "Реверсивный двигатель и кнопка местного поста",
+  "plc": {"id": "PLC1", "cycle_ms": 10},
+  "modules": [
+    {"id": "DI1", "kind": "DI", "channels": 8, "base": 0},
+    {"id": "DO1", "kind": "DO", "channels": 8, "base": 0}
+  ],
+  "devices": [
+    {"id": "KM1", "class": "Contactor", "tag": "KM1", "role": "forward"},
+    {"id": "KM2", "class": "Contactor", "tag": "KM2", "role": "reverse"},
+    {"id": "KK1", "class": "ThermalRelay", "tag": "KK1"},
+    {"id": "M1", "class": "Motor", "tag": "M1", "power_kw": 2.2},
+    {"id": "SB1", "class": "PushButton", "tag": "SB1", "contact": "NC"}
+  ],
+  "connections": [
+    {"from": "DO1.0", "to": "KM1", "type": "wire"},
+    {"from": "DO1.1", "to": "KM2", "type": "wire"},
+    {"from": "KM1", "to": "KK1", "type": "drives"},
+    {"from": "KM2", "to": "KK1", "type": "drives"},
+    {"from": "KK1", "to": "M1", "type": "drives"},
+    {"from": "KM1", "to": "DI1.0", "type": "feedback", "contact": "NO"},
+    {"from": "KM2", "to": "DI1.1", "type": "feedback", "contact": "NO"},
+    {"from": "KK1", "to": "DI1.2", "type": "feedback", "contact": "NC"},
+    {"from": "SB1", "to": "DI1.3", "type": "wire"}
+  ]
+}
